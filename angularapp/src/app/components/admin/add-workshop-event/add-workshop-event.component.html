@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="form-card">
+    <h2>Add Workshop Event</h2>
+
+    <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+
+    <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+      <div class="form-group">
+        <label for="eventName">Event Name</label>
+        <input type="text" id="eventName" name="eventName" [(ngModel)]="workshopEvent.EventName" required #eventNameField="ngModel" placeholder="Enter event name" />
+        <div class="validation-error" *ngIf="eventNameField.touched && eventNameField.invalid">Event name is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="organizerName">Organizer Name</label>
+        <input type="text" id="organizerName" name="organizerName" [(ngModel)]="workshopEvent.OrganizerName" required placeholder="Enter organizer name" />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" [(ngModel)]="workshopEvent.Category" required placeholder="e.g., Technology, Arts, Business" />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" [(ngModel)]="workshopEvent.Description" required rows="3" placeholder="Enter event description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" [(ngModel)]="workshopEvent.Location" required placeholder="Enter location" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDateTime">Start Date & Time</label>
+          <input type="datetime-local" id="startDateTime" name="startDateTime" [(ngModel)]="workshopEvent.StartDateTime" required />
+        </div>
+        <div class="form-group">
+          <label for="endDateTime">End Date & Time</label>
+          <input type="datetime-local" id="endDateTime" name="endDateTime" [(ngModel)]="workshopEvent.EndDateTime" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="capacity">Capacity</label>
+        <input type="number" id="capacity" name="capacity" [(ngModel)]="workshopEvent.Capacity" required min="1" placeholder="Enter capacity" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="eventForm.invalid || loading">
+          {{ loading ? 'Adding...' : 'Add Event' }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="goBack()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

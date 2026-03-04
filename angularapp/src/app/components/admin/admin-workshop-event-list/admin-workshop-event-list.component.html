@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="header">
+    <h2>Workshop Events</h2>
+    <button class="btn-add" (click)="addEvent()">+ Add Event</button>
+  </div>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search by name, category, organizer, or location..."
+      [(ngModel)]="searchText"
+    />
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="no-data" *ngIf="filteredEvents.length === 0 && !errorMessage">
+    No workshop events found.
+  </div>
+
+  <table *ngIf="filteredEvents.length > 0">
+    <thead>
+      <tr>
+        <th>Event Name</th>
+        <th>Organizer</th>
+        <th>Category</th>
+        <th>Location</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Capacity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let event of filteredEvents">
+        <td>{{ event.EventName }}</td>
+        <td>{{ event.OrganizerName }}</td>
+        <td>{{ event.Category }}</td>
+        <td>{{ event.Location }}</td>
+        <td>{{ event.StartDateTime | date:'medium' }}</td>
+        <td>{{ event.EndDateTime | date:'medium' }}</td>
+        <td>{{ event.Capacity }}</td>
+        <td class="actions">
+          <button class="btn-edit" (click)="editEvent(event.WorkshopEventId)">Edit</button>
+          <button class="btn-delete" (click)="deleteEvent(event.WorkshopEventId)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

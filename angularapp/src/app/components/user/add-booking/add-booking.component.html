@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="form-card">
+    <h2>Book Workshop Event</h2>
+
+    <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+
+    <form (ngSubmit)="onSubmit()" #bookingForm="ngForm">
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" [(ngModel)]="booking.Gender" required>
+          <option value="" disabled>Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" [(ngModel)]="booking.Age" required min="1" max="120" placeholder="Enter age" />
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city" [(ngModel)]="booking.City" required placeholder="Enter city" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="occupation">Occupation</label>
+        <input type="text" id="occupation" name="occupation" [(ngModel)]="booking.Occupation" required placeholder="Enter occupation" />
+      </div>
+
+      <div class="form-group">
+        <label for="proof">Proof (ID/Document URL)</label>
+        <input type="text" id="proof" name="proof" [(ngModel)]="booking.Proof" required placeholder="Enter proof image URL or document reference" />
+      </div>
+
+      <div class="form-group">
+        <label for="additionalNotes">Additional Notes (Optional)</label>
+        <textarea id="additionalNotes" name="additionalNotes" [(ngModel)]="booking.AdditionalNotes" rows="3" placeholder="Any additional notes..."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="bookingForm.invalid || loading">
+          {{ loading ? 'Booking...' : 'Submit Booking' }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="goBack()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

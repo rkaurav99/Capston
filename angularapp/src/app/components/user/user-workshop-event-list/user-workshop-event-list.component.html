@@ -1,0 +1,37 @@
+<div class="container">
+  <h2>Available Workshop Events</h2>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search by name, category, organizer, or location..."
+      [(ngModel)]="searchText"
+    />
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="no-data" *ngIf="filteredEvents.length === 0 && !errorMessage">
+    No workshop events available.
+  </div>
+
+  <div class="event-grid" *ngIf="filteredEvents.length > 0">
+    <div class="event-card" *ngFor="let event of filteredEvents">
+      <div class="event-header">
+        <h3>{{ event.EventName }}</h3>
+        <span class="category-badge">{{ event.Category }}</span>
+      </div>
+      <p class="description">{{ event.Description }}</p>
+      <div class="event-details">
+        <div class="detail"><strong>Organizer:</strong> {{ event.OrganizerName }}</div>
+        <div class="detail"><strong>Location:</strong> {{ event.Location }}</div>
+        <div class="detail"><strong>Start:</strong> {{ event.StartDateTime | date:'medium' }}</div>
+        <div class="detail"><strong>End:</strong> {{ event.EndDateTime | date:'medium' }}</div>
+        <div class="detail"><strong>Available Seats:</strong> {{ event.Capacity }}</div>
+      </div>
+      <button class="btn-book" (click)="bookEvent(event.WorkshopEventId)" [disabled]="event.Capacity <= 0">
+        {{ event.Capacity > 0 ? 'Book Now' : 'Fully Booked' }}
+      </button>
+    </div>
+  </div>
+</div>

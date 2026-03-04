@@ -1,0 +1,25 @@
+<nav class="navbar" *ngIf="isLoggedIn">
+  <div class="navbar-brand">
+    <a routerLink="/">Workshop Event Management</a>
+  </div>
+
+  <ul class="navbar-menu">
+    <!-- Admin Menu -->
+    <ng-container *ngIf="userRole === 'Admin'">
+      <li><a routerLink="/admin/workshop-events" routerLinkActive="active">Workshop Events</a></li>
+      <li><a routerLink="/admin/bookings" routerLinkActive="active">Bookings Requested</a></li>
+      <li><a routerLink="/admin/feedbacks" routerLinkActive="active">Feedbacks</a></li>
+    </ng-container>
+
+    <!-- User Menu -->
+    <ng-container *ngIf="userRole === 'User'">
+      <li><a routerLink="/user/workshop-events" routerLinkActive="active">Workshop Events</a></li>
+      <li><a routerLink="/user/my-bookings" routerLinkActive="active">My Bookings</a></li>
+      <li><a routerLink="/user/feedback" routerLinkActive="active">Feedback</a></li>
+    </ng-container>
+
+    <li>
+      <a class="logout-btn" (click)="logout()">Logout</a>
+    </li>
+  </ul>
+</nav>

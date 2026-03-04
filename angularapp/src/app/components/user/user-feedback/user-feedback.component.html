@@ -1,0 +1,39 @@
+<div class="container">
+  <h2>Feedback</h2>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <!-- Add Feedback Form -->
+  <div class="feedback-form">
+    <h3>Submit Feedback</h3>
+    <div class="form-group">
+      <textarea
+        [(ngModel)]="newFeedbackText"
+        rows="4"
+        placeholder="Write your feedback here..."
+        required
+      ></textarea>
+    </div>
+    <button class="btn-submit" (click)="addFeedback()" [disabled]="!newFeedbackText.trim() || loading">
+      {{ loading ? 'Submitting...' : 'Submit Feedback' }}
+    </button>
+  </div>
+
+  <!-- Feedback List -->
+  <div class="feedback-list">
+    <h3>My Feedbacks</h3>
+
+    <div class="no-data" *ngIf="feedbacks.length === 0">
+      You haven't submitted any feedback yet.
+    </div>
+
+    <div class="feedback-card" *ngFor="let feedback of feedbacks">
+      <div class="feedback-header">
+        <span class="feedback-date">{{ feedback.Date | date:'medium' }}</span>
+        <button class="btn-delete" (click)="deleteFeedback(feedback.FeedbackId)">Delete</button>
+      </div>
+      <p class="feedback-text">{{ feedback.FeedbackText }}</p>
+    </div>
+  </div>
+</div>

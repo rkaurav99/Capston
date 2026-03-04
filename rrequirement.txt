@@ -1,0 +1,1412 @@
+WORKSHOP EVENT MANAGEMENT SYSTEM
+
+Overview:
+
+The Workshop Event Management System is a digital platform designed to streamline the
+organization and participation process for various workshops and events. Administrators can
+create and manage workshop events by providing essential details such as the event name,
+description, field of workshop, duration (in days), organizer name, category.
+
+Users can browse through available workshops and register by submitting their details, including
+reasons for attending, professional background, proof image, age, city, occupation and an
+optional additional note. Each registration records the user ID, associated event ID, registration
+date, and current status (e.g., Submitted, UnderReview, Approved, or Rejected).
+
+The system's intuitive interface enables users to track their registration status, receive event-
+related updates, and gain access to enriching workshop experiences.
+
+Users of the System:
+
+1. Admin
+
+2. User
+Modules of the Application:
+
+Admin:
+
+1. Register
+
+2. Login
+
+3. Home
+
+4. Workshop Event Lists
+
+5. Bookings Requested
+
+6. Feedbacks
+
+User:
+
+1. Register
+
+2. Login
+
+3. Home
+
+4. Workshop Event Lists
+
+5. Booked Workshop Events
+
+6. Feedback
+
+Technology Stack
+
+Front End
+
+Angular 10+, HTML, CSS
+
+Back End
+
+NET Web API, EF Core, Microsoft SQL Server Database.
+
+Application assumptions:
+
+1. The login page should be the first page rendered when the application loads.
+
+2. Manual routing should be restricted by implementing Auth Guard, utilizing the canActivate
+interface. For example, if the user enters as http://localhost:8080/dashboard or
+
+http://localhost:8080/user the page should not navigate to the corresponding page instead it
+should redirect to the login page.
+
+3. Unless logged into the system, the user cannot navigate to any other pages.
+
+4. Logging out must again redirect to the login page.
+
+ApplicationDbContext: (/Data/ApplicationDbContext.cs)
+
+Inside Data folder create ApplicationDbContext file with the following DbSet mentioned
+below
+public DbSet<User> Users { get; set; }
+public DbSet<Booking> Bookings { get; set; }
+public DbSet<WorkshopEvent> WorkshopEvents { get; set; }
+public DbSet<Feedback> Feedbacks { get; set; }
+
+Model Classes:
+
+Inside Models folder create all the model classes mentioned below.
+
+Namespace: All the model classes should located within the dotnetapp.Models namespace.
+
+User (Models / User.cs):
+This class stores the user role (Admin or User) and all user information.
+
+Properties:
+
+. UserId: int
+. Email: string
+. Password: string
+. Username: string
+. MobileNumber: string
+. UserRole: string
+. SecretKey ?: string
+
+WorkshopEvent (Models/WorkshopEvent.cs)
+This class stores information about a workshop event.
+
+Properties:
+
+. WorkshopEventId: int
+. EventName: string
+· OrganizerName: string
+· Category: string
+. Description: string
+
+. Location: string
+. StartDateTime: DateTime
+. EndDateTime: DateTime
+· Capacity: int
+
+×
+
+Booking (Models/Booking.cs)
+This class represents a booking for a workshop event.
+
+Properties:
+
+. BookingId: int
+. UserId: int
+. User ?: User
+. WorkshopEventId: int
+. WorkshopEvent ?: WorkshopEvent
+· BookingStatus: string
+. BookingDate: DateTime
+· Gender: string
+· Age: int
+. Occupation: string
+· City: string
+· Proof: string
+. AdditionalNotes ?: string
+
+Feedback (Models / Feedback.cs):
+This class represents feedback submitted by users.
+
+Properties:
+
+. FeedbackId: int
+. UserId: int
+. User ?: User
+. FeedbackText: string
+. Date: DateTime
+
+LoginModel (Models / LoginModel.cs):
+This class stores the email and password to authenticate the user during login.
+
+Properties:
+
+. Email: string
+· Password: string
+
+UserRoles (Models / UserRoles.cs):
+This class defines constants for user roles.
+Constants:
+1. Admin: string - Represents the role of an admin user.
+
+2. User: string - Represents the role of a regular user.
+
+Application User (Models / Application User.cs):
+This class represents a user in the application, inheriting from IdentityUser class.
+
+Property:
+. Name: string (Max length 50)
+
+Exceptions: (Exceptions / WorkshopEventException.cs)
+
+1. Inside Exceptions folder create the exception file named WorkshopEventException
+(WorkshopEventException.cs).
+2. Purpose: The WorkshopEventException class provides a mechanism for handling
+exceptions related to workshop events operations within the application.
+
+3. Namespace: It should located within the dotnetapp.Exceptions namespace.
+
+4. Inheritance: Inherits from the base Exception class, enabling it to leverage existing
+exception handling mechanisms.
+5. Constructor: Contains a constructor that accepts a message parameter, allowing to specify
+custom error messages when throwing exceptions.
+
+For example, you might throw a WorkshopEventException.
+
+1. When attempting to delete a workshop event that is referenced by a user booking.
+2. When trying to add a workshop event with the same event name as an existing one.
+
+Important note:
+
+Implement database logic only in the service file functions without using try-catch. Use try-
+catch only in the controller files and call the service file functions inside it.
+
+Services:
+
+Inside "Services" folder create all the services file mentioned below.
+
+Namespace: All the services file should located within the dotnetapp.Services namespace.
+
+WorkshopEventService (Services / WorkshopEventService.cs)
+This service class provides methods to interact with workshop event data stored in the database.
+
+Constructor:
+public WorkshopEventService(ApplicationDbContext context)
+
+_context = context;
+
+Functions:
+
+1. public async Task<IEnumerable<WorkshopEvent>> GetAllWorkshopEvents():
+
+a. Retrieves and returns all workshop events from the database.
+
+2. public async Task<WorkshopEvent> GetWorkshopEventById(int workshopEventId):
+
+a. Retrieves a workshop event from the database with the specified workshopEventId.
+
+3. public async Task<bool> AddWorkshopEvent(WorkshopEvent workshopEvent):
+
+a. Checks if a workshop event with the same event name already exists in the database.
+b. If a workshop event with the same name exists, throws a WorkshopEventException with
+the message "Event with the same name already exists".
+c. If no event with the same name exists, adds the new workshop event to the database.
+d. Saves changes asynchronously to the database.
+e. Returns true for a successful insertion.
+
+4. public async Task<bool> UpdateWorkshopEvent(int workshopEventId,
+WorkshopEvent workshopEvent):
+
+a. If no workshop event with the specified workshopEventId is found in the database, returns
+false.
+b. Checks if a workshop event with the same event name already exists in the database.
+c. If a workshop event with the same name exists, throws a WorkshopEventException with
+the message "Event with the same name already exists".
+d. If no workshop event with the same name exists, updates the existing workshop event with
+the values from the provided workshopEvent object.
+e. Saves changes asynchronously to the database.
+f. Returns true for a successful update.
+
+5. public async Task<bool> DeleteWorkshopEvent(int workshopEventId):
+
+a. Retrieves the workshop event from the database based on the provided workshopEventId.
+
+b. Checks if the workshop event is referenced in any Booking. If referenced, throws a
+WorkshopEventException with the message "Workshop event cannot be deleted, it is
+referenced in bookings".
+
+c. If the workshop event is not referenced by any Booking, removes the workshop event
+from the database.
+
+d. Saves changes asynchronously to the database.
+
+e. Returns true for a successful deletion.
+
+BookingService (Services / BookingService.cs)
+
+This service class provides methods to interact with booking data stored in the database.
+
+Constructor:
+
+public BookingService(ApplicationDbContext context)
+
+context = context;
+
+Functions:
+
+1. public async Task<IEnumerable<Booking>>GetAllBookings()
+a. Retrieves and returns all bookings from the database.
+
+2. public async Task<IEnumerable<Booking>> GetBookingsByUserId(int userId)
+
+a. Retrieves all bookings associated with a specific userId from the database.
+
+3. public async Task<bool> AddBooking(Booking booking)
+
+a. Checks if the WorkshopEvent with the specified WorkshopEventId exists in the database.
+b. If not found, throws a WorkshopEventException with the message "Workshop event
+not found."
+c. If the event has no available seats (Capacity <= 0), throws a WorkshopEventException
+with the message "No more seats available for this event."
+d. If a booking already exists for the same WorkshopEventId and UserId, throws a
+WorkshopEventException with the message "Booking with the same reference already
+exists."
+e. Adds the new booking to the database.
+f. Reduces the event's capacity by 1.
+
+g. Saves changes asynchronously to the database.
+h. Returns true upon successful insertion.
+
+4. public async Task<bool> UpdateBooking(int bookingId, Booking booking)
+
+a. Retrieves the existing booking with the specified bookingId from the database.
+b. If no booking is found, returns false.
+c. If found, updates the booking details with the values from the provided booking object.
+d. Saves changes asynchronously to the database.
+e. Returns true upon successful update.
+5. public async Task<bool> DeleteBooking(int bookingId)
+
+a. Retrieves the booking with the specified bookingId from the database.
+b. If no booking is found, returns false.
+c. If found, removes the booking from the database.
+d. Saves changes asynchronously to the database.
+e. Returns true upon successful deletion.
+
+FeedbackService (Services / FeedbackService.cs):
+
+This service class provides methods to interact with feedback data stored in the database.
+
+Constructor:
+
+public FeedbackService(ApplicationDbContext context)
+
+_context = context;
+
+Functions:
+
+1. public async Task<IEnumerable<Feedback>> GetAllFeedbacks():
+
+a. Retrieves all feedbacks from the database.
+
+2. public async Task<IEnumerable<Feedback>> GetFeedbacksByUserId(int userId):
+
+a. Retrieves all feedbacks associated with a specific userId from the database.
+
+3. public async Task<bool> AddFeedback(Feedback feedback):
+
+a. Adds new feedback to the database.
+b. Return true for the successful insertion.
+
+4. public async Task<bool> DeleteFeedback(int feedbackId):
+
+a. Retrieve the existing feedback from the database with the specified feedbackId.
+b. If no feedback with the specified feedbackId is found, return false.
+c. If found, delete the feedback with the provided feedbackId.
+d. Save changes asynchronously to the database.
+e. Return true for the successful delete.
+
+AuthService (Services / AuthService.cs):
+
+The AuthService class is responsible for user authentication and authorization.
+
+Constructor:
+
+public AuthService(UserManager<ApplicationUser> userManager,
+RoleManager<IdentityRole> roleManager, IConfiguration configuration,
+ApplicationDbContext context)
+
+this.userManager = userManager;
+this.roleManager = roleManager;
+_configuration = configuration;
+_context = context;
+
+Functions:
+
+1. public async Task<(int, string)> Registration (User model, string role):
+
+a. Check if the email already exists in the database. If so return "User already exists".
+b. Registers a new user with the provided details and assigns a role.
+c. If any error occurs return "User creation failed! Please check user details and try again".
+d. Return "User created successfully!" for the successful register.
+
+2. public async Task<(int, string)> Login (LoginModel model):
+
+a. Find user by email in the database.
+b. Check if user exists, if not return "Invalid email".
+c. If the user exists, check the password is correct, if not return "Invalid password".
+d. Logs in a user with the provided credentials and generates a JWT token for authentication.
+3. private string GenerateToken(IEnumerable<Claim> claims):
+
+a. Generates a JWT token based on the provided claims.
+
+IAuthService (Services / IAuthService.cs):
+
+The IAuthService is an interface that defines methods for user registration and login.
+
+Methods:
+
+1. Task< (int, string)> Registration (User model, string role);
+
+2. Task< (int, string)> Login (LoginModel model);
+
+Controllers:
+
+Inside "Controllers" folder create all the controllers file mentioned below.
+
+Namespace: All the controllers file should located within the dotnetapp.Controllers namespace.
+
+AuthenticationController (Controllers / AuthenticationController.cs):
+
+This controller handles user authentication and registration requests.
+
+Functions:
+
+1. public async Task<IActionResult> Login(LoginModel model)
+
+a. Accepts login requests, validates the payload, and calls the authentication service to
+perform user login.
+b. It utilizes_authService.Login(model) method.
+c. Returns a 200 OK response with a JWT token upon successful login.
+d. If an exception occurs during the process, it returns a 500 Internal Server Error response
+2. public async Task<IActionResult> Register(User model):
+
+a. Accepts registration requests, validates the payload. If fails, then returns error.
+b. Calls the authentication service to register a new user(_authService.Registration(model,
+model. UserRole)). Returns a 200 OK response with success message upon successful
+registration.
+c. If an exception occurs during the process, it returns a 500 Internal Server Error response
+with the exception message.
+
+WorkshopEventController (Controllers / WorkshopEventController.cs)
+
+The WorkshopEventController manages workshop event operations, interacting with the
+WorkshopEventService to perform CRUD operations. It provides endpoints to retrieve, add,
+update, and delete workshop events. Certain operations require administrative privileges.
+
+Functions:
+
+1. public async Task<ActionResult<IEnumerable<WorkshopEvent>>>
+GetAllWorkshopEvents():
+
+a. Implement the logic inside a try-catch block.
+
+b. The GetAlIWorkshopEvents method is a controller action responsible for retrieving all
+workshop events.
+
+c. It calls the_workshopEventService.GetAlIWorkshopEvents() method to fetch all
+workshop events from the service layer.
+
+d. It returns a 200 OK response with the retrieved workshop events.
+2. public async Task<ActionResult<WorkshopEvent>>GetWorkshopEventById(int
+workshopEventId):
+
+a. Implement the logic inside a try-catch block.
+
+b. The GetWorkshopEventById method is a controller action responsible for retrieving a
+workshop event by its ID.
+
+c. It calls the_workshopEventService.GetWorkshopEventById(workshopEventId) method to
+retrieve the workshop event from the service layer.
+
+d. If the workshop event is not found, it returns a 404 Not Found response with the message
+"Workshop event not found".
+
+e. If the workshop event is found, it returns a 200 OK response with the workshop event data.
+
+3. public async Task<ActionResult> AddWorkshopEvent([FromBody] WorkshopEvent
+workshopEvent):
+
+a. Implement the logic inside a try-catch block.
+
+b. The AddWorkshopEvent method is a controller action responsible for adding a workshop
+event.
+
+c. It receives the workshop event data in the request body.
+
+d. It tries to add the workshop event using the
+_workshopEventService.AddWorkshopEvent(workshopEvent) method.
+
+e. If adding the workshop event is successful, it returns a 200 OK response with the success
+message "Workshop event added successfully".
+f. If adding the workshop event fails, it returns a 500 Internal Server Error response with the
+failure message "Failed to add workshop event".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error response
+with the exception message.
+
+h. This method requires Admin role authorization.
+
+4. public async Task<ActionResult> UpdateWorkshopEvent(int workshopEventId,
+[FromBody] WorkshopEvent workshopEvent):
+
+a. Implement the logic inside a try-catch block.
+
+b. The UpdateWorkshopEvent method is a controller action responsible for updating a
+workshop event.
+
+c. It receives the workshop event ID and updated workshop event data in the request body.
+
+d. It tries to update the workshop event using the
+_workshopEventService.UpdateWorkshopEvent(workshopEventId, workshopEvent) method.
+
+e. If the update is successful, it returns a 200 OK response with the success message
+"Workshop event updated successfully".
+
+f. If the workshop event is not found, it returns a 404 Not Found response with the message
+"Workshop event not found".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error response
+with the exception message.
+
+h. This method requires Admin role authorization.
+
+5. public async Task<ActionResult> DeleteWorkshopEvent(int workshopEventId):
+
+a. Implement the logic inside a try-catch block.
+
+b. The DeleteWorkshopEvent method is a controller action responsible for deleting a
+workshop event.
+c. It receives the workshop event ID to be deleted.
+
+d. It tries to delete the workshop event using the
+_workshopEventService.DeleteWorkshopEvent(workshopEventId) method.
+
+e. If the deletion is successful, it returns a 200 OK response with the success message
+"Workshop event deleted successfully".
+
+f. If the workshop event is not found, it returns a 404 Not Found response with the message
+"Workshop event not found".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error response
+with the exception message.
+
+h. This method requires Admin role authorization.
+
+BookingController (Controllers / BookingController.cs)
+
+This controller manages booking operations, interacting with the BookingService to perform
+CRUD operations.
+
+Functions:
+
+1. public async Task<ActionResult<IEnumerable<Booking>>>GetAlIBookings()
+
+a. Implements the logic inside a try-catch block.
+
+b. The GetAllBookings method is a controller action responsible for retrieving all bookings.
+
+c. It calls the_bookingService.GetAlIBookings() method to fetch all booking records from
+the service layer.
+
+d. It returns a 200 OK response with the retrieved bookings.
+
+2. public async Task<ActionResult<Booking>>GetBookingsByUserId(int userId)
+
+a. Implements the logic inside a try-catch block.
+
+b. The GetBookingsByUserId method is a controller action responsible for retrieving
+booking records based on a specific user ID.
+
+c. It calls the_bookingService.GetBookingsByUserId(userId) method to fetch bookings for
+the given user from the service layer.
+d. If no bookings are found, it returns a 404 Not Found response with the message
+"Booking not found".
+
+e. If bookings are found, it returns a 200 OK response with the retrieved bookings.
+
+f. The endpoint is protected and requires authentication, allowing access only to users with
+the "User" role.
+
+3. public async Task<ActionResult> AddBooking([FromBody] Booking booking)
+
+a. Implements the logic inside a try-catch block.
+
+b. The AddBooking method is a controller action responsible for adding a new booking.
+
+c. It receives the booking details in the request body.
+
+d. It calls the_bookingService.AddBooking(booking) method to add a new booking to the
+system.
+
+e. If adding the booking is successful, it returns a 200 OK response with the message
+"Booking added successfully".
+
+f. If adding the booking fails, it returns a 500 Internal Server Error response with the
+message "Failed to add booking".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+h. The endpoint is protected and requires authentication.
+
+4. public async Task<ActionResult> UpdateBooking(int bookingId, [FromBody] Booking
+booking)
+
+a. Implements the logic inside a try-catch block.
+
+b. The UpdateBooking method is a controller action responsible for updating an existing
+booking.
+
+c. It receives the bookingId and updated booking details in the request body.
+
+d. It calls the_bookingService.UpdateBooking(bookingId, booking) method to update the
+booking.
+e. If the update is successful, it returns a 200 OK response with the message "Booking
+updated successfully".
+
+f. If the booking is not found, it returns a 404 Not Found response with the message
+"Booking not found".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+h. The endpoint is protected and requires authentication.
+
+5. public async Task<ActionResult> DeleteBooking(int bookingId)
+
+a. Implements the logic inside a try-catch block.
+
+b. The DeleteBooking method is a controller action responsible for deleting a booking.
+
+c. It receives the bookingId to be deleted.
+
+d. It calls the_bookingService.DeleteBooking(bookingId) method to remove the booking
+from the system.
+
+e. If the deletion is successful, it returns a 200 OK response with the message "Booking
+deleted successfully"
+
+f. If the booking is not found, it returns a 404 Not Found response with the message
+"Booking not found".
+
+g. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+h. The endpoint is protected and requires authentication, allowing access only to users with
+the "Admin" role.
+
+FeedbackController (Controllers / FeedbackController.cs):
+
+This controller manages feedbacks, interacting with the FeedbackService to perform CRUD
+operations.
+
+Functions:
+
+1. public async Task<ActionResult<IEnumerable<Feedback>>>GetAlIFeedbacks():
+
+a. Implement the logic inside try-catch block.
+
+b. The GetAllFeedbacks method is a controller action responsible for retrieving all
+feeđbacks.
+
+c. It tries to get all feedbacks using the_feedbackService.GetAlIFeedbacks() method.
+
+d. If the operation is successful, it returns a 200 OK response with the retrieved feedbacks.
+
+e. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+2. public async Task<ActionResult<IEnumerable<Feedback>>>
+GetFeedbacksByUserId(int userId):
+
+a. Implement the logic inside try-catch block.
+
+b. The GetFeedbacksByUserId method is a controller action responsible for retrieving
+feedbacks by userId.
+
+c. It tries to get feedbacks by userId using the
+_feedbackService.GetFeedbacksByUserId(userId) method.
+
+d. If feedbacks are found, it returns a 200 OK response with the retrieved feedbacks.
+
+e. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+3. public async Task<ActionResult> AddFeedback([FromBody] Feedback feedback):
+
+a. Implement the logic inside try-catch block.
+
+b. The AddFeedback method is a controller action responsible for adding a new feedback.
+
+c. It receives the feedback data in the request body.
+
+d. It tries to add the feedback using the_feedbackService.AddFeedback(feedback)
+method.
+
+e. If adding the feedback is successful, it returns a 200 OK response with a success
+message "Feedback added successfully".
+
+f. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+4. public async Task<ActionResult> DeleteFeedback(int feedbackId):
+
+a. Implement the logic inside try-catch block.
+
+b. The DeleteFeedback method is a controller action responsible for deleting a feedback.
+
+c. It receives the feedbackId to be deleted.
+
+d. It tries to delete the feedback using the_feedbackService.DeleteFeedback(feedbackId)
+method.
+
+e. If the deletion is successful, it returns a 200 OK response with a success message
+"Feedback deleted successfully".
+
+f. If the feedback is not found, it returns a 404 Not Found response with a message
+"Cannot find any feedback".
+g. If an exception occurs during the process, it returns a 500 Internal Server Error
+response with the exception message.
+
+Endpoints:
+
+Authentication
+
+POST
+
+/api/login
+
+/api/register
+
+WorkshopEvent
+
+GET
+
+GET
+
+PUT
+
+DELETE
+
+POST
+
+/api/workshop-events
+
+/api/workshop-event/{workshopEventId}
+
+/api/workshop-event/{workshopEventId)
+
+/api/werkshep-evert/[workshopEventId)
+
+/api/workshop-even:
+
+Booking
+
+/api/bookings
+
+/api/bookings/user/{userId]
+
+/api/booking
+
+/api/booking/{bookingId}
+
+/api/booking/{bookingId}
+
+GET
+
+GET
+
+POST
+
+PUT
+
+DELETE
+
+Feedback
+
+GET
+
+/ap/feedback
+
+POST
+
+/api/feedback
+
+GET
+
+DELETE
+
+/api/feedback/user/{userId}
+
+/api/feedback/{feedbackId}
+
+1. Login: [Access for both Admin and User]
+
+Endpoint name: "/api/login"
+
+Method: POST
+
+Request body:
+
+"Email": "string",
+"Password": "string"
+
+Response:
+
+Status Code
+200 (Http status code OK)
+400 Bad Request
+500
+
+2. Register: [Access for both Admin and User]
+
+Endpoint name: "/api/register"
+
+Method: POST
+
+Request body:
+
+Response body
+{
+"Username": "string",
+"Email": "user@example.com",
+"MobileNumber": "9876541221",
+"Password": "Pass@2425",
+"UserRole": "string"
+}
+
+Response:
+
+Status Code
+200 (Http status code OK)
+400 Bad Request
+500
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+3. Get all workshop events: [Access for both Admin and User]
+
+Endpoint name: "/api/workshop-events"
+
+Method: GET
+
+Response:
+200 (Http status code OK)
+500
+
+Response body
+JSON object containing all the workshop events.
+JSON object containing error message.
+
+4. Add workshop event: [Access for only Admin]
+
+Endpoint name: "/api/workshop-event"
+
+Status Code
+200 (Http status code OK)
+500
+
+4. Add workshop event: [Access for only Admin]
+
+Endpoint name: "/api/workshop-event"
+
+Method: POST
+
+Request body:
+
+"WorkshopEventId": 0,
+"EventName": "string",
+"OrganizerName": "string",
+"Category": "string",
+"Description": "string",
+"Location": "string",
+"StartDateTime": "2025-03-27T11:58:10.804Z",
+
+"EndDateTime": "2025-03-27T11:58:10.804Z",
+"Capacity": 100
+}
+Response:
+
+200 (Http status code OK)
+400 Bad Request
+500
+
+5. Get specific workshop event: [Access for only Admin]
+
+Endpoint name: "/api/workshop-event/{workshopEventId}"
+
+Method: GET
+
+Parameter: workshopEventId
+
+Response:
+
+Status Code
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+Response body
+JSON object containing workshop event details.
+JSON object containing error message.
+JSON object containing error message.
+
+6. Update workshop event: [Access for only Admin]
+
+Endpoint name: "/api/workshop-event/{workshopEventId}"
+
+Method: PUT
+
+Parameter: workshopEventId
+
+Request body:
+
+"WorkshopEventId": 0,
+"EventName": "string",
+"OrganizerName": "string",
+"Category": "string",
+"Description": "string",
+"Location": "string",
+"StartDateTime": "2025-03-27T12:02:51.453Z",
+
+"EndDateTime": "2025-03-27T12:02:51.453Z",
+"Capacity": 100
+}
+Response:
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+7. Delete workshop event: [Access for only Admin]
+
+Endpoint name: "/api/workshop-event/{workshopEventId}"
+
+Method: DELETE
+
+Parameter: workshopEventId
+
+Response:
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+8. Get all workshop event bookings: [Access for only Admin]
+
+Endpoint name: "/api/bookings"
+
+Method: GET
+
+Response:
+
+Status Code
+200 (Http status code OK)
+
+500
+
+Response body
+JSON object containing all the workshop event
+bookings.
+JSON object containing success message.
+
+9. Add workshop event booking: [Access for only User]
+
+Endpoint name: "/api/booking"
+
+Method: POST
+
+Request body:
+
+"BookingId": 0,
+"UserId": 0,
+"WorkshopEventId": 0,
+"BookingStatus": "string",
+"BookingDate": "2025-03-27T12:11:36.722Z",
+"AdditionalNotes?": "string",
+"Proof": "string",
+"Gender": "string",
+"Age": 120,
+"Occupation": "string",
+"City": "string"
+3
+
+Response:
+Status Code
+200 (Http status code OK)
+400 Bad Request
+500
+
+10. Get booking specific to user: [Access for only User]
+
+Endpoint name: "/api/bookings/user/{userId}"
+
+Method: GET
+
+Parameter: userId
+
+Response:
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+Response body
+JSON object containing all the workshop event
+bookings.
+JSON object containing success message.
+
+11. Update workshop event booking: [Access for Admin]
+
+Endpoint name: "/api/booking/{bookingId}"
+
+Method: PUT
+
+Status Code
+200 (Http status code OK)
+
+500
+Parameter: bookingId
+
+Request body:
+
+"BookingId": 0,
+"UserId": 0,
+"WorkshopEventId": 0,
+"BookingStatus": "string",
+"BookingDate": "2025-03-27T12:11:36.722Z",
+"AdditionalNotes?": "string",
+"Proof": "string",
+"Gender": "string",
+"Age": 120,
+"Occupation": "string",
+"City": "string"
+
+Response:
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+12. Delete workshop event booking: [Access for both Admin and User]
+
+Endpoint name: "/api/booking/{bookingId}"
+
+Method: DELETE
+
+Parameter: bookingId
+
+Response:
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+Response:
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+13. Get all feedbacks: [Access for only Admin]
+
+Endpoint name: "/api/feedback"
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+Method: GET
+
+Response:
+
+Status Code
+200 (Http status code OK)
+500
+
+14. Add feedback: [Access for only User]
+
+Endpoint name: "/api/feedback"
+
+Method: POST
+
+Response body
+JSON object containing all the feedbacks.
+JSON object containing success message.
+
+Request body:
+{
+"UserId": 0,
+"FeedbackText": "string",
+"Date": "2024-07-07T12:28:56.927Z"
+}
+Response:
+
+Status Code
+200 (Http status code OK)
+400 Bad Request
+500
+
+15. Get feedback specific to user: [Access for only User]
+
+Endpoint name: "/api/feedback/user/{userId}"
+
+Method: GET
+
+Parameter: userId
+
+Response:
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+Status Code
+200 (Http status code OK)
+500
+
+Response body
+JSON object containing all the feedbacks.
+JSON object containing success message.
+
+16. Delete feedback: [Access for only User]
+
+Endpoint name: "/api/feedback /{feedbackId}"
+
+Method: DELETE
+
+Parameter: feedbackId
+
+Response:
+
+Status Code
+200 (Http status code OK)
+404 Not Found
+500
+
+Frontend Requirements:
+
+. Create a folder named components inside the app to store all the components.
+(Refer project structure screenshots).
+. Create a folder named models inside app to store all the model interface.
+. Create a folder named as services inside app to implement all the services.
+. Create model interface referring the backend entities (User, WorkshopEvent,
+Booking, Feedback) mentioned in the backend requirements accordingly.
+. You can create your own components based on the application requirements.
+. Import model files, services and components as required.
+
+Response body
+JSON object containing success message.
+JSON object containing error message.
+JSON object containing error message.
+
+
+Frontend Models:
+
+User Model:
+
+class User {
+UserId ?: number;
+
+Email: string;
+Password: string;
+Username: string;
+MobileNumber: string;
+
+UserRole: string;
+SecretKey ?: string;
+
+Login Model:
+class Login {
+Email: string;
+Password: string;
+}
+
+WorkshopEvent Model:
+export interface WorkshopEvent {
+WorkshopEventId ?: number;
+EventName: string;
+OrganizerName: string;
+Category: string;
+Description: string;
+Location: string;
+StartDateTime: Date;
+EndDateTime: Date;
+Capacity: number;
+
+Booking Model:
+
+export interface Booking {
+BookingId: number;
+UserId: number;
+
+WorkshopEventId: number;
+BookingStatus: string;
+BookingDate: Date;
+Gender: string;
+
+Age: number;
+Occupation: string;
+City: string;
+Proof: string;
+AdditionalNotes ?: string;
+
+Feedback Model:
+
+class Feedback {
+
+FeedbackId ?: number;
+
+UserId: number;
+
+FeedbackText: string;
+
+Date: Date;
+
+Frontend services:
+. Declare a public property apiUrl to store the backend URL in all the services.
+. For example, public apiUrl = 'http://localhost:8080'. Instead of'localhost', replace it with
+the URL of your workspace port 8080 URL.
+. For the API's to be used please refer the API Table.
+. Authorized token to be passed in headers for all end points.
+
+1. AuthService(auth.service.ts):
+
+. Create a service name as auth inside app/services folder to implement the following
+functions.
+
+Methods Overview:
+
+. register(user: User): Observable<any>:
+. Use this method to register a new user. It sends a POST request to the '/api/register'
+endpoint with the user data provided as the body.
+
+. login(login : Login): Observable<any>:
+. This method is used to authenticate a user by logging them in. It sends a POST request to
+the '/api/login' endpoint with the user's email and password. Upon successful login, it
+
+stores the JWT token in localStorage and updates the user's role and ID using
+BehaviorSubjects.
+
+2. WorkshopEventService (workshop-event.service.ts)
+
+Create a service named workshop-event inside app/services and implement the following
+functions in it.
+
+Methods Overview:
+
+1. getAllWorkshopEvents(): Observable<WorkshopEvent[]>
+
+a. Fetch all workshop events from the server.
+
+b. Sends a GET request to the /api/workshop-events endpoint with the authorization
+token prefixed with 'Bearer' stored in localStorage.
+
+2. addWorkshopEvent(requestObject: WorkshopEvent):
+Observable<WorkshopEvent>
+
+a. Adds a new workshop event.
+
+b. Sends a POST request to the /api/workshop-event endpoint with the event data
+provided as requestObject and the authorization token prefixed with 'Bearer'
+stored in localStorage.
+
+3. deleteWorkshopEvent(workshopEventId: number): Observable<void>
+
+a. Deletes a workshop event with the specified ID.
+
+b. Sends a DELETE request to the /api/workshop-event/{workshopEventId}
+endpoint with the authorization token prefixed with 'Bearer' stored in localStorage.
+
+4. getWorkshopEventById(id: number): Observable<WorkshopEvent>
+
+a. Retrieves a workshop event by its ID.
+
+b. Sends a GET request to the /api/workshop-event/{id} endpoint with the
+authorization token prefixed with 'Bearer' stored in localStorage.
+
+5. updateWorkshopEvent(id: number, requestObject: WorkshopEvent):
+Observable<WorkshopEvent>
+
+a. Updates an existing workshop event.
+b. Sends a PUT request to the /api/workshop-event/{id} endpoint with the event ID
+and the updated event data provided as requestObject, along with the
+authorization token prefixed with 'Bearer' stored in localStorage.
+
+6. getRegisteredEvents(userId: number): Observable<WorkshopEvent|]>
+
+a. Retrieves all workshop events a specific user has registered for.
+
+b. Sends a GET request to the /api/bookings/user/{userId} endpoint with the
+authorization token prefixed with 'Bearer' stored in localStorage.
+
+7. addWorkshopEventBooking(data: Booking): Observable<Booking>
+
+a. Submits a new booking for a workshop event.
+
+b. Sends a POST request to the /api/booking endpoint with the booking data
+provided as data and the authorization token prefixed with 'Bearer' stored in
+localStorage.
+
+8. deleteWorkshopEventBooking(bookingId: number): Observable<void>
+
+a. Deletes a workshop event booking with the specified ID.
+
+b. Sends a DELETE request to the /api/booking/{bookingId} endpoint with the
+authorization token prefixed with 'Bearer' stored in localStorage.
+
+9. getAllWorkshopEventBookings(): Observable<Booking|]>
+
+a. Fetches all workshop event bookings from the server.
+
+b. Sends a GET request to the /api/bookings endpoint with the authorization token
+prefixed with 'Bearer' stored in localStorage.
+
+10. updateWorkshopEventBooking(id: number, booking: Booking):
+Observable<Booking>
+
+a. Updates the details of an existing workshop event booking.
+
+b. Sends a PUT request to the /api booking/{id} endpoint with the booking ID,
+updated booking data, and the authorization token prefixed with 'Bearer' stored in
+localStorage.
+
+3. FeedbackService(feedback.service.ts):
+
+. Create a service name as feedback inside app/services and implement the following
+functions in it.
+
+Methods Overview:
+
+. sendFeedback(feedback: Feedback): Observable<Feedback>:
+. Use this method to send feedback to the server. It sends a POST request to the
+'api/feedback' endpoint with the feedback data provided and the authorization token
+prefixed with 'Bearer' stored in localStorage.
+
+. getAllFeedbacksByUserId(userId: number): Observable<Feedback[]>:
+. This method retrieves all feedbacks submitted by a specific user. It sends a GET request
+to the '/api/feedback/user/{userId}' endpoint with the user ID and the authorization token
+prefixed with 'Bearer' stored in localStorage.
+
+. deleteFeedback(feedbackId: number): Observable<void>:
+. Call this method to delete a feedback with the specified ID. It sends a DELETE request to
+the '/api/feedback/{feedbackId}' endpoint with the feedback ID and the authorization
+token prefixed with 'Bearer' stored in localStorage.
+
+. getFeedbacks(): Observable<Feedback[]>:
+. This method fetches all feedbacks from the server. It sends a GET request to the
+'/api/feedback' endpoint with the authorization token prefixed with 'Bearer' stored in
+localStorage.
+
+Validations:
+
+Client-Side Validation:
+
+. Implement client-side validation using HTML5 attributes and JavaScript to validate user
+input before making API requests.
+. Provide immediate feedback to users for invalid input, such as displaying error messages
+near the input fields.
+
+Server-Side Validation:
+
+. Implement server-side validation in the controllers to ensure data integrity.
+. Validate user input and API responses to prevent unexpected or malicious data from
+affecting the application.
+
+. Return appropriate validation error messages to the user interface for any validation
+failures.
+
+Exception Handling:
+
+. Implement exception handling mechanisms in the controllers to gracefully handle errors
+and exceptions. Define custom exception classes for different error scenarios, such as
+API communication errors or database errors.
+. Log exceptions for debugging purposes while presenting user-friendly error messages to
+users. Record all the exceptions and errors handled store in separate table "ErrorLogs".
+
+Error Pages:
+
+Create custom error pages for different HTTP status codes (e.g., 404 Not Found, 500 Internal
+Server Error) to provide a consistent and user-friendly error experience. Ensure that error pages
+contain helpful information and guidance for users.
+
+Thus, create a reliable and user-friendly web application that not only meets user expectations
+but also provides a robust and secure experience, even when faced with unexpected situations.
+Error page has to be displayed if something goes wrong.
+
+WORKSHOP EVENT MANAGEMENT SYSTEM
+
+Something Went Wrong
+We're sorry, but an etror occured. Please try again later.
+
+Frontend Screenshots:
+
+. All the asterisk (*) marked fields are mandatory in the form. Make sure to mark all the field
+names with * symbol followed by the validations.
+
+Navigation Bar: (navbar component)
+It should display the heading "Workshop Event Management System" using the h1 tag. (Note:
+In CSS, use text-transform to convert to uppercase).
+
+WORKSHOP EVENT MANAGEMENT SYSTEM
+
+Component displays a title along with router links to "Register" and "Login".
+
+User side (Admin and User):
+
+Registration Page: (registration component)
+
+Clicking "Register" in the navbar displays the registration page for both roles. Refer to the
+screenshots below for validations. It should display a heading "Registration" using a h1 tag.
+
+

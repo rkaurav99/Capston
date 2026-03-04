@@ -1,0 +1,109 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Register</h2>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="user.Username"
+          required
+          #usernameField="ngModel"
+          placeholder="Enter your username"
+        />
+        <div class="validation-error" *ngIf="usernameField.touched && usernameField.invalid">
+          <span *ngIf="usernameField.errors?.required">Username is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="user.Email"
+          required
+          email
+          #emailField="ngModel"
+          placeholder="Enter your email"
+        />
+        <div class="validation-error" *ngIf="emailField.touched && emailField.invalid">
+          <span *ngIf="emailField.errors?.required">Email is required.</span>
+          <span *ngIf="emailField.errors?.email">Please enter a valid email.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input
+          type="text"
+          id="mobileNumber"
+          name="mobileNumber"
+          [(ngModel)]="user.MobileNumber"
+          required
+          #mobileField="ngModel"
+          placeholder="Enter your mobile number"
+        />
+        <div class="validation-error" *ngIf="mobileField.touched && mobileField.invalid">
+          <span *ngIf="mobileField.errors?.required">Mobile number is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="user.Password"
+          required
+          minlength="6"
+          #passwordField="ngModel"
+          placeholder="Enter your password"
+        />
+        <div class="validation-error" *ngIf="passwordField.touched && passwordField.invalid">
+          <span *ngIf="passwordField.errors?.required">Password is required.</span>
+          <span *ngIf="passwordField.errors?.minlength">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="userRole">User Role</label>
+        <select
+          id="userRole"
+          name="userRole"
+          [(ngModel)]="user.UserRole"
+          required
+          #roleField="ngModel"
+        >
+          <option value="" disabled selected>Select a role</option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+        </select>
+        <div class="validation-error" *ngIf="roleField.touched && roleField.invalid">
+          <span *ngIf="roleField.errors?.required">Role is required.</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || loading">
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
+    </form>
+
+    <p class="login-link">
+      Already have an account? <a (click)="goToLogin()">Login here</a>
+    </p>
+  </div>
+</div>

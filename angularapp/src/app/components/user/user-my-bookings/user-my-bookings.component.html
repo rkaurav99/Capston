@@ -1,0 +1,43 @@
+<div class="container">
+  <h2>My Bookings</h2>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="no-data" *ngIf="bookings.length === 0 && !errorMessage">
+    You haven't booked any workshop events yet.
+  </div>
+
+  <table *ngIf="bookings.length > 0">
+    <thead>
+      <tr>
+        <th>Booking ID</th>
+        <th>Event ID</th>
+        <th>Booking Date</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Occupation</th>
+        <th>City</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let booking of bookings">
+        <td>{{ booking.BookingId }}</td>
+        <td>{{ booking.WorkshopEventId }}</td>
+        <td>{{ booking.BookingDate | date:'mediumDate' }}</td>
+        <td>{{ booking.Gender }}</td>
+        <td>{{ booking.Age }}</td>
+        <td>{{ booking.Occupation }}</td>
+        <td>{{ booking.City }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="{
+            'status-submitted': booking.BookingStatus === 'Submitted',
+            'status-review': booking.BookingStatus === 'UnderReview',
+            'status-approved': booking.BookingStatus === 'Approved',
+            'status-rejected': booking.BookingStatus === 'Rejected'
+          }">{{ booking.BookingStatus }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

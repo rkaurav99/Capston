@@ -1,0 +1,19 @@
+<div class="container">
+  <h2>User Feedbacks</h2>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="no-data" *ngIf="feedbacks.length === 0 && !errorMessage">
+    No feedbacks found.
+  </div>
+
+  <div class="feedback-list" *ngIf="feedbacks.length > 0">
+    <div class="feedback-card" *ngFor="let feedback of feedbacks">
+      <div class="feedback-header">
+        <span class="user-id">User ID: {{ feedback.UserId }}</span>
+        <span class="feedback-date">{{ feedback.Date | date:'medium' }}</span>
+      </div>
+      <p class="feedback-text">{{ feedback.FeedbackText }}</p>
+    </div>
+  </div>
+</div>
