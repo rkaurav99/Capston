@@ -7,14 +7,27 @@
   <!-- Add Feedback Form -->
   <div class="feedback-form">
     <h3>Submit Feedback</h3>
+
     <div class="form-group">
+      <label>Related Booking <span class="optional">(optional)</span></label>
+      <select [(ngModel)]="selectedBookingId">
+        <option [ngValue]="null">-- General feedback (not for a specific booking) --</option>
+        <option *ngFor="let b of bookings" [ngValue]="b.BookingId">
+          Booking #{{ b.BookingId }} &ndash; Event #{{ b.WorkshopEventId }} &ndash; {{ b.BookingStatus }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Your Feedback</label>
       <textarea
         [(ngModel)]="newFeedbackText"
         rows="4"
-        placeholder="Write your feedback here..."
+        placeholder="Describe your experience, suggestions, or any issues..."
         required
       ></textarea>
     </div>
+
     <button class="btn-submit" (click)="addFeedback()" [disabled]="!newFeedbackText.trim() || loading">
       {{ loading ? 'Submitting...' : 'Submit Feedback' }}
     </button>
@@ -33,7 +46,24 @@
         <span class="feedback-date">{{ feedback.Date | date:'medium' }}</span>
         <button class="btn-delete" (click)="deleteFeedback(feedback.FeedbackId)">Delete</button>
       </div>
+
+      <div class="booking-ref" *ngIf="feedback.Booking">
+        <span class="label">Booking:</span>
+        <span>#{{ feedback.Booking.BookingId }}
+          <ng-container *ngIf="feedback.Booking.WorkshopEvent">&nbsp;&ndash;&nbsp;{{ feedback.Booking.WorkshopEvent.EventName }}</ng-container>
+          &nbsp;<span class="status-badge status-{{ feedback.Booking.BookingStatus | lowercase }}">{{ feedback.Booking.BookingStatus }}</span>
+        </span>
+      </div>
+
       <p class="feedback-text">{{ feedback.FeedbackText }}</p>
+
+      <div class="admin-response" *ngIf="feedback.AdminResponse">
+        <div class="response-label">&#128236; Admin Response <span class="response-date">{{ feedback.ResponseDate | date:'medium' }}</span></div>
+        <p class="response-text">{{ feedback.AdminResponse }}</p>
+      </div>
+      <div class="awaiting-response" *ngIf="!feedback.AdminResponse">
+        <span>&#9203; Awaiting admin response</span>
+      </div>
     </div>
   </div>
 </div>

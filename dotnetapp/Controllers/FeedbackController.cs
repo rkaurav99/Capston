@@ -64,6 +64,24 @@ namespace dotnetapp.Controllers
             }
         }
 
+        [HttpPut("feedback/{feedbackId}/respond")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult> RespondToFeedback(int feedbackId, [FromBody] FeedbackResponseModel model)
+        {
+            try
+            {
+                var result = await _feedbackService.RespondToFeedback(feedbackId, model.AdminResponse);
+                if (result)
+                    return Ok(new { message = "Response sent successfully" });
+
+                return NotFound(new { message = "Feedback not found" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("feedback/{feedbackId}")]
         [Authorize(Roles = UserRoles.User)]
         public async Task<ActionResult> DeleteFeedback(int feedbackId)

@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using dotnetapp.Models;
 using dotnetapp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,15 @@ namespace dotnetapp.Controllers
             _authService = authService;
         }
 
+        /// <summary>
+        /// Decode a Base64-encoded string back to plain text.
+        /// </summary>
+        private static string DecodeBase64(string encoded)
+        {
+            var bytes = Convert.FromBase64String(encoded);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -22,6 +33,10 @@ namespace dotnetapp.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(new { message = "Invalid payload" });
+
+                // Decode Base64-encoded credentials
+                model.Email = DecodeBase64(model.Email);
+                model.Password = DecodeBase64(model.Password);
 
                 var (status, message) = await _authService.Login(model);
                 if (status == 0)
@@ -42,6 +57,10 @@ namespace dotnetapp.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(new { message = "Invalid payload" });
+
+                // Decode Base64-encoded credentials
+                model.Email = DecodeBase64(model.Email);
+                model.Password = DecodeBase64(model.Password);
 
                 var (status, message) = await _authService.Registration(model, model.UserRole);
                 if (status == 0)

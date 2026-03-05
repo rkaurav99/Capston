@@ -2,6 +2,7 @@
   <h2>User Feedbacks</h2>
 
   <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
 
   <div class="no-data" *ngIf="feedbacks.length === 0 && !errorMessage">
     No feedbacks found.
@@ -9,11 +10,60 @@
 
   <div class="feedback-list" *ngIf="feedbacks.length > 0">
     <div class="feedback-card" *ngFor="let feedback of feedbacks">
+
+      <!-- Header: User info + date -->
       <div class="feedback-header">
-        <span class="user-id">User ID: {{ feedback.UserId }}</span>
+        <div class="user-info">
+          <span class="user-name">&#128100; {{ feedback.User?.Username || 'User #' + feedback.UserId }}</span>
+          <span class="user-email">{{ feedback.User?.Email }}</span>
+        </div>
         <span class="feedback-date">{{ feedback.Date | date:'medium' }}</span>
       </div>
+
+      <!-- Booking reference -->
+      <div class="booking-ref" *ngIf="feedback.Booking">
+        <span class="label">Booking:</span>
+        <span>
+          #{{ feedback.Booking.BookingId }}
+          <ng-container *ngIf="feedback.Booking.WorkshopEvent">
+            &nbsp;&ndash;&nbsp;<strong>{{ feedback.Booking.WorkshopEvent.EventName }}</strong>
+            &nbsp;<em>({{ feedback.Booking.WorkshopEvent.Category }})</em>
+          </ng-container>
+          &nbsp;<span class="status-badge status-{{ feedback.Booking.BookingStatus | lowercase }}">{{ feedback.Booking.BookingStatus }}</span>
+        </span>
+      </div>
+      <div class="no-booking" *ngIf="!feedback.Booking">
+        General feedback (not linked to a booking)
+      </div>
+
+      <!-- Feedback text -->
       <p class="feedback-text">{{ feedback.FeedbackText }}</p>
+
+      <!-- Admin response -->
+      <div class="admin-response" *ngIf="feedback.AdminResponse && respondingId !== feedback.FeedbackId">
+        <div class="response-label">Your Response <span class="response-date">{{ feedback.ResponseDate | date:'medium' }}</span></div>
+        <p class="response-text">{{ feedback.AdminResponse }}</p>
+        <button class="btn-edit" (click)="openRespond(feedback.FeedbackId, feedback.AdminResponse)">Edit Response</button>
+      </div>
+
+      <!-- Respond form -->
+      <div class="respond-form" *ngIf="respondingId === feedback.FeedbackId">
+        <label>Your Response</label>
+        <textarea [(ngModel)]="responseText" rows="3" placeholder="Write your response to this feedback..."></textarea>
+        <div class="respond-actions">
+          <button class="btn-send" (click)="submitResponse(feedback.FeedbackId)" [disabled]="!responseText.trim() || respondingLoading">
+            {{ respondingLoading ? 'Sending...' : 'Send Response' }}
+          </button>
+          <button class="btn-cancel" (click)="cancelRespond()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Reply button if no response yet and not currently responding -->
+      <button class="btn-reply" *ngIf="!feedback.AdminResponse && respondingId !== feedback.FeedbackId"
+        (click)="openRespond(feedback.FeedbackId, '')">
+        &#128236; Reply to Feedback
+      </button>
+
     </div>
   </div>
 </div>

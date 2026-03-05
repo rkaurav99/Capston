@@ -17,6 +17,8 @@ namespace dotnetapp.Services
         {
             return await _context.Feedbacks
                 .Include(f => f.User)
+                .Include(f => f.Booking)
+                    .ThenInclude(b => b.WorkshopEvent)
                 .ToListAsync();
         }
 
@@ -25,7 +27,21 @@ namespace dotnetapp.Services
             return await _context.Feedbacks
                 .Where(f => f.UserId == userId)
                 .Include(f => f.User)
+                .Include(f => f.Booking)
+                    .ThenInclude(b => b.WorkshopEvent)
                 .ToListAsync();
+        }
+
+        public async Task<bool> RespondToFeedback(int feedbackId, string response)
+        {
+            var feedback = await _context.Feedbacks.FindAsync(feedbackId);
+            if (feedback == null)
+                return false;
+
+            feedback.AdminResponse = response;
+            feedback.ResponseDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> AddFeedback(Feedback feedback)

@@ -37,6 +37,14 @@ export class FeedbackService {
   }
 
   /**
+   * PUT /api/feedback/{feedbackId}/respond
+   * Admin sends a response to a feedback.
+   */
+  respondToFeedback(feedbackId: number, adminResponse: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/feedback/${feedbackId}/respond`, { AdminResponse: adminResponse });
+  }
+
+  /**
    * DELETE /api/feedback/{feedbackId}
    * Deletes a feedback. (User only)
    */

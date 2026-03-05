@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Login</h2>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="login.Email"
+          required
+          email
+          #emailField="ngModel"
+          placeholder="Enter your email"
+        />
+        <div class="validation-error" *ngIf="emailField.touched && emailField.invalid">
+          <span *ngIf="emailField.errors?.required">Email is required.</span>
+          <span *ngIf="emailField.errors?.email">Please enter a valid email.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="login.Password"
+          required
+          #passwordField="ngModel"
+          placeholder="Enter your password"
+        />
+        <div class="validation-error" *ngIf="passwordField.touched && passwordField.invalid">
+          <span *ngIf="passwordField.errors?.required">Password is required.</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid || loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+    <p class="register-link">
+      Don't have an account? <a (click)="goToRegister()">Register here</a>
+    </p>
+  </div>
+</div>
