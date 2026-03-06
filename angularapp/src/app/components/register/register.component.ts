@@ -11,6 +11,10 @@ import { User } from '../../models/user.model';
 export class RegisterComponent {
 
   user: User = new User();
+  confirmPassword: string = '';
+  confirmPasswordError: string = '';
+  showPassword = false;
+  showConfirmPassword = false;
   errorMessage: string = '';
   successMessage: string = '';
   loading: boolean = false;
@@ -20,6 +24,13 @@ export class RegisterComponent {
   onRegister(): void {
     this.errorMessage = '';
     this.successMessage = '';
+    this.confirmPasswordError = '';
+
+    if (this.user.Password !== this.confirmPassword) {
+      this.confirmPasswordError = 'Passwords do not match.';
+      return;
+    }
+
     this.loading = true;
 
     this.authService.register(this.user).subscribe(

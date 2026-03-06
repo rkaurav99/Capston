@@ -1,1 +1,29 @@
-/* my-bookings — Tailwind */
+.my-bookings-table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.my-booking-row {
+	transition:
+		background-color var(--transition-fast),
+		box-shadow var(--transition-fast),
+		border-color var(--transition-fast),
+		transform var(--transition-fast);
+}
+
+.my-booking-row:hover,
+.my-booking-row:focus-within {
+	background:
+		linear-gradient(135deg, rgba(var(--theme-glow-rgb), 0.08), rgba(var(--theme-panel-rgb), 0.18)),
+		rgba(var(--theme-panel-rgb), 0.58);
+	box-shadow: inset 0 1px 0 rgba(var(--theme-glow-rgb), 0.08), inset 0 -1px 0 rgba(var(--theme-glow-rgb), 0.08);
+}
+
+.my-booking-id,
+.my-booking-title {
+	color: var(--theme-text-strong) !important;
+}
+
+.my-booking-meta {
+	color: var(--theme-muted) !important;
+}

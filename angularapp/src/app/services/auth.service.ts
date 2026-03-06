@@ -118,4 +118,22 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
   }
+
+  /**
+   * Get the user's profile by ID.
+   */
+  getUserProfile(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/users/${userId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update the user's profile.
+   */
+  updateUserProfile(userId: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/users/${userId}`, data, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

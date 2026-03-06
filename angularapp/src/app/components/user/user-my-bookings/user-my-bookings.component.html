@@ -1,5 +1,5 @@
 <div class="bg-white border-b border-gray-100 px-8 py-6">
-  <h1 class="text-2xl font-black text-gray-900" style="font-family:'Poppins',sans-serif">My Bookings</h1>
+  <h1 class="text-2xl font-black text-gray-900" style="font-family:'Space Grotesk',sans-serif">My Bookings</h1>
   <p class="text-gray-400 text-sm mt-0.5">Track and manage all your workshop reservations</p>
 </div>
 
@@ -23,7 +23,7 @@
   <!-- Bookings table -->
   <div *ngIf="bookings.length > 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
+      <table class="my-bookings-table w-full text-sm">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Booking ID</th>
@@ -34,18 +34,18 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
-          <tr *ngFor="let b of bookings" class="hover:bg-gray-50 transition">
+          <tr *ngFor="let b of bookings" class="my-booking-row">
             <td class="px-6 py-4">
-              <span class="font-mono font-semibold text-gray-700">#{{b.BookingId}}</span>
+              <span class="my-booking-id font-mono font-semibold text-gray-700">#{{b.BookingId}}</span>
             </td>
             <td class="px-6 py-4">
               <div>
-                <p class="font-semibold text-gray-900">Event #{{b.WorkshopEventId}}</p>
-                <p class="text-gray-400 text-xs mt-0.5">{{b.Occupation}}</p>
+                <p class="my-booking-title font-semibold text-gray-900">Event #{{b.WorkshopEventId}}</p>
+                <p class="my-booking-meta text-gray-400 text-xs mt-0.5">{{b.Occupation}}</p>
               </div>
             </td>
-            <td class="px-6 py-4 text-gray-500">{{b.BookingDate | date:'MMM d, y'}}</td>
-            <td class="px-6 py-4 text-gray-500">{{b.City}}</td>
+            <td class="my-booking-meta px-6 py-4 text-gray-500">{{b.BookingDate | date:'MMM d, y'}}</td>
+            <td class="my-booking-meta px-6 py-4 text-gray-500">{{b.City}}</td>
             <td class="px-6 py-4">
               <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                 [ngClass]="{

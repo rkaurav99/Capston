@@ -1,6 +1,7 @@
-<div class="flex min-h-screen bg-gray-50">
-  <app-navbar *ngIf="showSidebar"></app-navbar>
-  <div [class]="showSidebar ? 'flex-1 ml-64 min-h-screen overflow-x-hidden' : 'flex-1'">
+<div class="app-shell">
+  <app-navbar [showSidebar]="showSidebar" (sidebarCollapsedChange)="sidebarCollapsed=$event"></app-navbar>
+  <div class="app-main" [class.with-sidebar]="showSidebar" [class.sidebar-collapsed]="sidebarCollapsed">
     <router-outlet></router-outlet>
   </div>
+  <app-theme-toggle></app-theme-toggle>
 </div>

@@ -109,4 +109,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Seed sample data
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<dotnetapp.Data.ApplicationDbContext>();
+    await dotnetapp.Data.DbSeeder.SeedAsync(db);
+}
+
 app.Run();

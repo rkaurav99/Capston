@@ -1,0 +1,127 @@
+<div class="ep-page">
+
+  <!-- Header bar -->
+  <div class="ep-header">
+    <button class="ep-back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div>
+      <h1 class="ep-title">Edit Profile</h1>
+      <p class="ep-subtitle">Update your account information</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="ep-body">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="ep-loading">
+      <i class="fas fa-spinner fa-spin ep-spinner"></i>
+      <p>Loading profile…</p>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="!loading" class="ep-card">
+
+      <!-- Avatar + role badge -->
+      <div class="ep-avatar-row">
+        <div class="ep-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div>
+          <p class="ep-avatar-name">{{ username || 'User' }}</p>
+          <span class="ep-role-badge">{{ userRole }}</span>
+        </div>
+      </div>
+
+      <!-- Alert messages -->
+      <div *ngIf="successMessage" class="ep-alert ep-alert-success">
+        <i class="fas fa-circle-check"></i> {{ successMessage }}
+      </div>
+      <div *ngIf="errorMessage" class="ep-alert ep-alert-error">
+        <i class="fas fa-circle-xmark"></i> {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="onSave()" #profileForm="ngForm">
+
+        <!-- Section: Account Info -->
+        <p class="ep-section-label">Account Information</p>
+
+        <div class="ep-field-group">
+          <div class="ep-field">
+            <label class="ep-label">Full Name</label>
+            <div class="ep-input-wrap">
+              <i class="fas fa-user ep-input-icon"></i>
+              <input type="text" class="ep-input" [(ngModel)]="username" name="username"
+                placeholder="Your full name" required />
+            </div>
+          </div>
+
+          <div class="ep-field">
+            <label class="ep-label">Email Address</label>
+            <div class="ep-input-wrap">
+              <i class="fas fa-envelope ep-input-icon"></i>
+              <input type="email" class="ep-input ep-input-readonly" [value]="email"
+                name="email" readonly title="Email cannot be changed" />
+            </div>
+            <p class="ep-hint">Email address cannot be changed</p>
+          </div>
+
+          <div class="ep-field">
+            <label class="ep-label">Mobile Number</label>
+            <div class="ep-input-wrap">
+              <i class="fas fa-phone ep-input-icon"></i>
+              <input type="tel" class="ep-input" [(ngModel)]="mobileNumber" name="mobileNumber"
+                placeholder="Your mobile number" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Change Password -->
+        <p class="ep-section-label">Change Password <span class="ep-optional">(optional)</span></p>
+
+        <div class="ep-field-group">
+          <div class="ep-field" [class.ep-field-error]="passwordError">
+            <label class="ep-label">New Password</label>
+            <div class="ep-input-wrap">
+              <i class="fas fa-lock ep-input-icon"></i>
+              <input [type]="showNewPassword ? 'text' : 'password'" class="ep-input ep-input-pw"
+                [(ngModel)]="newPassword" name="newPassword" placeholder="Leave blank to keep current" />
+              <button type="button" class="ep-eye-btn" (click)="showNewPassword = !showNewPassword"
+                [attr.aria-label]="showNewPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="ep-field" [class.ep-field-error]="passwordError">
+            <label class="ep-label">Confirm New Password</label>
+            <div class="ep-input-wrap">
+              <i class="fas fa-lock ep-input-icon"></i>
+              <input [type]="showConfirmPassword ? 'text' : 'password'" class="ep-input ep-input-pw"
+                [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Repeat new password" />
+              <button type="button" class="ep-eye-btn" (click)="showConfirmPassword = !showConfirmPassword"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <p *ngIf="passwordError" class="ep-error-msg">
+              <i class="fas fa-triangle-exclamation"></i> {{ passwordError }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="ep-actions">
+          <button type="button" class="ep-btn-cancel" (click)="goBack()">Cancel</button>
+          <button type="submit" class="ep-btn-save" [disabled]="saving">
+            <i *ngIf="saving" class="fas fa-spinner fa-spin"></i>
+            <i *ngIf="!saving" class="fas fa-floppy-disk"></i>
+            {{ saving ? 'Saving…' : 'Save Changes' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

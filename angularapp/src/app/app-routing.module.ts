@@ -25,6 +25,9 @@ import { AddBookingComponent } from './components/user/add-booking/add-booking.c
 import { UserMyBookingsComponent } from './components/user/user-my-bookings/user-my-bookings.component';
 import { UserFeedbackComponent } from './components/user/user-feedback/user-feedback.component';
 
+// Shared / Profile
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+
 const routes: Routes = [
   // Public routes
   { path: '', component: HomeComponent },
@@ -46,6 +49,9 @@ const routes: Routes = [
   { path: 'user/book-event/:eventId', component: AddBookingComponent, canActivate: [AuthGuard] },
   { path: 'user/my-bookings', component: UserMyBookingsComponent, canActivate: [AuthGuard] },
   { path: 'user/feedback', component: UserFeedbackComponent, canActivate: [AuthGuard] },
+
+  // Shared
+  { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthGuard] },
 
   // Wildcard
   { path: '**', redirectTo: '/home' }

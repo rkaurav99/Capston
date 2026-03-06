@@ -12,20 +12,34 @@ export class UserWorkshopEventListComponent implements OnInit {
   workshopEvents: WorkshopEvent[] = [];
   errorMessage = '';
   searchText = '';
+  loading = false;
+  viewMode: 'grid' | 'list' = (localStorage.getItem('eventView') as 'grid' | 'list') || 'grid';
 
   constructor(private workshopEventService: WorkshopEventService, private router: Router) {}
 
   ngOnInit(): void { this.loadWorkshopEvents(); }
 
   loadWorkshopEvents(): void {
+    this.loading = true;
     this.workshopEventService.getAllWorkshopEvents().subscribe(
-      (data: WorkshopEvent[]) => { this.workshopEvents = data; },
-      () => { this.errorMessage = 'Failed to load workshop events.'; }
+      (data: WorkshopEvent[]) => {
+        this.workshopEvents = data;
+        this.loading = false;
+      },
+      () => {
+        this.errorMessage = 'Failed to load workshop events.';
+        this.loading = false;
+      }
     );
   }
 
   bookEvent(workshopEventId: number): void {
     this.router.navigate(['/user/book-event', workshopEventId]);
+  }
+
+  setView(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+    localStorage.setItem('eventView', mode);
   }
 
   get filteredEvents(): WorkshopEvent[] {

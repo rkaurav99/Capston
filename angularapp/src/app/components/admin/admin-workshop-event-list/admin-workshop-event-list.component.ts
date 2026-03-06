@@ -13,6 +13,8 @@ export class AdminWorkshopEventListComponent implements OnInit {
   workshopEvents: WorkshopEvent[] = [];
   errorMessage: string = '';
   searchText: string = '';
+  loading: boolean = false;
+  viewMode: 'grid' | 'list' = (localStorage.getItem('eventView') as 'grid' | 'list') || 'grid';
 
   constructor(
     private workshopEventService: WorkshopEventService,
@@ -24,12 +26,15 @@ export class AdminWorkshopEventListComponent implements OnInit {
   }
 
   loadWorkshopEvents(): void {
+    this.loading = true;
     this.workshopEventService.getAllWorkshopEvents().subscribe(
       (data: WorkshopEvent[]) => {
         this.workshopEvents = data;
+        this.loading = false;
       },
       (error) => {
         this.errorMessage = 'Failed to load workshop events.';
+        this.loading = false;
       }
     );
   }
@@ -57,6 +62,11 @@ export class AdminWorkshopEventListComponent implements OnInit {
         }
       );
     }
+  }
+
+  setView(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+    localStorage.setItem('eventView', mode);
   }
 
   get filteredEvents(): WorkshopEvent[] {

@@ -1,75 +1,106 @@
 <div class="min-h-screen bg-white">
 
-  <!-- ===== TOP NAV (public) ===== -->
-  <header class="absolute top-0 left-0 right-0 z-40 px-6 py-4">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
-          <i class="fas fa-calendar-star text-white text-sm"></i>
-        </div>
-        <span class="text-white font-bold text-xl" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
+  <!-- ===== HERO ===== -->
+  <section class="cf-hero" (mousemove)="onHeroPointerMove($event)" (mouseleave)="onHeroPointerLeave()">
+
+    <!-- Background visuals layer -->
+    <div class="cf-visuals" #heroVisuals aria-hidden="true">
+
+      <!-- Primary large W — hover-reactive segments -->
+      <div class="cf-arc-wrap" #heroRing>
+        <svg class="cf-arc-svg" viewBox="0 0 1440 920" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Segment 1: Left outer arm  (top-left → left dip) -->
+          <g class="cf-w-seg">
+            <line x1="12"  y1="12"  x2="390" y2="908" class="cf-w-hit"/>
+            <line x1="12"  y1="12"  x2="390" y2="908" class="cf-w-line"/>
+            <circle cx="12"  cy="12"  r="6" class="cf-w-node"/>
+            <circle cx="390" cy="908" r="5" class="cf-w-node cf-w-node-dim"/>
+          </g>
+
+          <!-- Segment 2: Left inner arm  (left dip → middle notch) -->
+          <g class="cf-w-seg">
+            <line x1="390" y1="908" x2="720" y2="168" class="cf-w-hit"/>
+            <line x1="390" y1="908" x2="720" y2="168" class="cf-w-line"/>
+            <circle cx="720" cy="168" r="6" class="cf-w-node"/>
+          </g>
+
+          <!-- Segment 3: Right inner arm (middle notch → right dip) -->
+          <g class="cf-w-seg">
+            <line x1="720" y1="168" x2="1050" y2="908" class="cf-w-hit"/>
+            <line x1="720" y1="168" x2="1050" y2="908" class="cf-w-line"/>
+            <circle cx="1050" cy="908" r="5" class="cf-w-node cf-w-node-dim"/>
+          </g>
+
+          <!-- Segment 4: Right outer arm  (right dip → top-right) -->
+          <g class="cf-w-seg">
+            <line x1="1050" y1="908" x2="1428" y2="12"  class="cf-w-hit"/>
+            <line x1="1050" y1="908" x2="1428" y2="12"  class="cf-w-line"/>
+            <circle cx="1428" cy="12"  r="6" class="cf-w-node"/>
+          </g>
+
+        </svg>
       </div>
-      <div class="flex items-center gap-3">
-        <ng-container *ngIf="!isLoggedIn()">
-          <button (click)="goLogin()" class="text-white/80 hover:text-white px-4 py-2 text-sm font-medium transition">Log In</button>
-          <button (click)="goRegister()" class="bg-white text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-xl text-sm font-semibold shadow transition">Get Started</button>
-        </ng-container>
-        <ng-container *ngIf="isLoggedIn()">
-          <button (click)="goDashboard()" class="bg-white text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-xl text-sm font-semibold shadow transition">
-            <i class="fas fa-gauge-high mr-2"></i>Dashboard
-          </button>
-        </ng-container>
+
+      <!-- Glow aura behind the arc -->
+      <div class="cf-glow-disc" #heroGlow></div>
+
+      <!-- Bottom-right corner bracket accent -->
+      <div class="cf-corner-accent">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="200" r="130" stroke="var(--theme-hero-arc)" stroke-width="0.8" stroke-opacity="0.20"/>
+          <circle cx="200" cy="200" r="80"  stroke="var(--theme-hero-arc)" stroke-width="0.5" stroke-opacity="0.10"/>
+        </svg>
       </div>
     </div>
-  </header>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero-gradient relative flex items-center justify-center min-h-screen overflow-hidden">
-    <!-- Decorative blobs -->
-    <div class="absolute top-20 left-16 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-20 right-16 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
-      <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-indigo-200 text-xs font-semibold px-4 py-2 rounded-full mb-6">
-        <i class="fas fa-sparkles text-yellow-400"></i> Over 500 Workshops Available
-      </span>
-      <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6" style="font-family:'Poppins',sans-serif">
-        Discover &amp; Book <br>
-        <span class="text-transparent bg-clip-text" style="background:linear-gradient(135deg,#a5b4fc,#c084fc)">Amazing Workshops</span>
+    <!-- Main content -->
+    <div class="cf-body">
+      <h1 class="cf-title">
+        {{ isLoggedIn() ? 'Welcome back!' : 'Book. Learn. Grow.' }}
       </h1>
-      <p class="text-indigo-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-        Upskill, network, and grow with hundreds of professional workshops across technology, design, business & more.
+
+      <div class="cf-subtitle-pill">
+        <i class="fas fa-sparkles"></i>
+        <span>{{ isLoggedIn() ? 'Your dashboard is ready — pick up where you left off.' : 'I\'m ready to help you discover the perfect workshop. What are you looking for?' }}</span>
+      </div>
+
+      <div class="cf-input-card">
+        <div class="cf-input-inner">
+          <input
+            type="text"
+            class="cf-search"
+            [(ngModel)]="searchText"
+            placeholder="Search workshops, categories, skills..."
+            (keyup.enter)="handleHeroSearch()"
+          >
+          <div class="cf-input-actions">
+            <button class="cf-go-btn" (click)="handleHeroSearch()" aria-label="Search">
+              <i class="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="cf-fine-print">
+        <ng-container *ngIf="!isLoggedIn()">
+          <a class="cf-fine-link" (click)="goRegister()">Create free account</a>
+          <span class="cf-fine-sep">·</span>
+        </ng-container>
+        <a class="cf-fine-link" (click)="isLoggedIn() ? goDashboard() : goLogin()">
+          {{ isLoggedIn() ? 'Open Dashboard →' : 'Sign in to explore' }}
+        </a>
       </p>
 
-      <!-- Search bar -->
-      <div class="flex flex-col sm:flex-row items-center gap-3 max-w-xl mx-auto mb-10">
-        <div class="relative flex-1 w-full">
-          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-          <input type="text" [(ngModel)]="searchText" placeholder="Search workshops, categories..."
-            class="w-full pl-11 pr-4 py-4 rounded-2xl text-gray-800 bg-white shadow-2xl focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm">
-        </div>
-        <button (click)="goLogin()" class="w-full sm:w-auto px-7 py-4 rounded-2xl font-semibold text-sm shadow-2xl transition-all duration-200 hover:scale-105"
-          style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff">
-          <i class="fas fa-arrow-right mr-2"></i>Explore
+      <!-- Quick category chips -->
+      <div class="cf-chips">
+        <button *ngFor="let cat of categories.slice(0, 4)" type="button" class="cf-chip" (click)="handleHeroSearch()">
+          <i [class]="cat.icon"></i>
+          <span>{{ cat.name }}</span>
         </button>
       </div>
-
-      <!-- Quick stats row -->
-      <div class="flex flex-wrap justify-center gap-6">
-        <div *ngFor="let s of stats" class="flex items-center gap-2 text-white/80">
-          <i [class]="s.icon" class="text-sm" [style.color]="s.color"></i>
-          <span class="font-bold text-white">{{s.value}}</span>
-          <span class="text-sm">{{s.label}}</span>
-        </div>
-      </div>
     </div>
 
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-xs flex flex-col items-center gap-2 floating">
-      <span>Scroll to explore</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
   </section>
 
   <!-- ===== CATEGORIES ===== -->
@@ -77,7 +108,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
         <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Explore By Category</span>
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Find Your Niche</h2>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Space Grotesk',sans-serif">Find Your Niche</h2>
         <p class="text-gray-500 mt-3 max-w-xl mx-auto">From cutting-edge tech to creative arts, we have workshops that match every passion and career goal.</p>
       </div>
 
@@ -100,7 +131,7 @@
       <div class="flex items-end justify-between mb-12">
         <div>
           <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Don't Miss Out</span>
-          <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Featured Workshops</h2>
+          <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Space Grotesk',sans-serif">Featured Workshops</h2>
         </div>
         <button (click)="goLogin()" class="hidden sm:flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:text-indigo-800 transition">
           View All <i class="fas fa-arrow-right"></i>
@@ -165,7 +196,7 @@
   <section class="py-20 px-4 bg-gray-50">
     <div class="max-w-5xl mx-auto text-center mb-14">
       <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Simple Process</span>
-      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">How It Works</h2>
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Space Grotesk',sans-serif">How It Works</h2>
     </div>
     <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
       <!-- Connector line -->
@@ -208,7 +239,7 @@
           <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-white/10">
             <i [class]="s.icon + ' text-xl text-white'"></i>
           </div>
-          <p class="text-4xl font-black text-white mb-1" style="font-family:'Poppins',sans-serif">{{s.value}}</p>
+          <p class="text-4xl font-black text-white mb-1" style="font-family:'Space Grotesk',sans-serif">{{s.value}}</p>
           <p class="text-indigo-300 text-sm font-medium">{{s.label}}</p>
         </div>
       </div>
@@ -220,7 +251,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-14">
         <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Success Stories</span>
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">What Our Users Say</h2>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Space Grotesk',sans-serif">What Our Users Say</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div *ngFor="let t of testimonials" class="card-hover bg-gray-50 border border-gray-100 rounded-2xl p-8">
@@ -248,7 +279,7 @@
     <div class="max-w-3xl mx-auto">
       <div class="text-center mb-14">
         <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Got Questions?</span>
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Frequently Asked</h2>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Space Grotesk',sans-serif">Frequently Asked</h2>
       </div>
       <div class="space-y-3">
         <div *ngFor="let faq of faqs; let i = index" class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
@@ -274,7 +305,7 @@
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
         <div class="relative z-10">
           <span class="inline-block bg-yellow-400 text-yellow-900 text-xs font-bold px-4 py-1.5 rounded-full mb-6">🚀 Limited Spots Available</span>
-          <h2 class="text-3xl md:text-4xl font-black text-white mb-4" style="font-family:'Poppins',sans-serif">Ready to Level Up?</h2>
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-4" style="font-family:'Space Grotesk',sans-serif">Ready to Level Up?</h2>
           <p class="text-indigo-200 text-lg mb-8 max-w-xl mx-auto">Join over 12,000 professionals who have accelerated their careers with WorkshopHub.</p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button (click)="goRegister()" class="px-8 py-4 rounded-2xl font-bold text-indigo-700 bg-white hover:bg-indigo-50 transition shadow-lg text-sm">
@@ -298,7 +329,7 @@
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
               <i class="fas fa-calendar-star text-white text-xs"></i>
             </div>
-            <span class="text-white font-bold" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
+            <span class="text-white font-bold" style="font-family:'Space Grotesk',sans-serif">WorkshopHub</span>
           </div>
           <p class="text-sm leading-relaxed">The leading platform for workshop discovery and professional development worldwide.</p>
         </div>

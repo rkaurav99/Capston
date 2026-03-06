@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnetapp.Migrations
 {
-    public partial class InitialSetup : Migration
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -194,27 +196,6 @@ namespace dotnetapp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Feedbacks",
-                columns: table => new
-                {
-                    FeedbackId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FeedbackText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Feedbacks", x => x.FeedbackId);
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
@@ -245,6 +226,35 @@ namespace dotnetapp.Migrations
                         column: x => x.WorkshopEventId,
                         principalTable: "WorkshopEvents",
                         principalColumn: "WorkshopEventId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    FeedbackId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    BookingId = table.Column<int>(type: "int", nullable: true),
+                    FeedbackText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AdminResponse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResponseDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => x.FeedbackId);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "BookingId");
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -298,11 +308,17 @@ namespace dotnetapp.Migrations
                 column: "WorkshopEventId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Feedbacks_BookingId",
+                table: "Feedbacks",
+                column: "BookingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_UserId",
                 table: "Feedbacks",
                 column: "UserId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -321,9 +337,6 @@ namespace dotnetapp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
-
-            migrationBuilder.DropTable(
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
@@ -333,10 +346,13 @@ namespace dotnetapp.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "WorkshopEvents");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "WorkshopEvents");
         }
     }
 }

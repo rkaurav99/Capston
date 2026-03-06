@@ -2,7 +2,7 @@
 <div class="bg-white border-b border-gray-100 px-8 py-6">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-black text-gray-900" style="font-family:'Poppins',sans-serif">My Dashboard</h1>
+      <h1 class="text-2xl font-black text-gray-900" style="font-family:'Space Grotesk',sans-serif">My Dashboard</h1>
       <p class="text-gray-400 text-sm mt-0.5">Welcome back! Here's your activity overview.</p>
     </div>
     <button (click)="goEvents()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm transition hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
@@ -78,18 +78,18 @@
         <p class="text-gray-400 text-sm">No bookings yet</p>
         <button (click)="goEvents()" class="mt-3 text-indigo-600 text-sm font-semibold hover:underline">Browse workshops →</button>
       </div>
-      <div *ngIf="!loading && recentBookings.length > 0" class="divide-y divide-gray-50">
-        <div *ngFor="let b of recentBookings" class="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-indigo-50">
+      <div *ngIf="!loading && recentBookings.length > 0" class="recent-bookings-list">
+        <div *ngFor="let b of recentBookings" class="recent-booking-row">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="recent-booking-icon w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-indigo-50">
               <i class="fas fa-calendar text-indigo-500 text-sm"></i>
             </div>
-            <div>
-              <p class="text-sm font-semibold text-gray-900">Booking #{{b.BookingId}}</p>
-              <p class="text-xs text-gray-400 mt-0.5">{{b.BookingDate | date:'MMM d, y'}}</p>
+            <div class="min-w-0">
+              <p class="recent-booking-title text-sm font-semibold text-gray-900">Booking #{{b.BookingId}}</p>
+              <p class="recent-booking-date text-xs text-gray-400 mt-0.5">{{b.BookingDate | date:'MMM d, y'}}</p>
             </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 recent-booking-status">
             <span class="text-xs font-semibold px-2.5 py-1 rounded-full" [ngClass]="badgeClass(b.BookingStatus)">{{b.BookingStatus}}</span>
           </div>
         </div>

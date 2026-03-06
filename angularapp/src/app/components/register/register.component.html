@@ -1,133 +1,103 @@
-<div class="min-h-screen flex" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%)">
-  <!-- Left branding -->
-  <div class="hidden lg:flex flex-col justify-center px-16 flex-1 relative overflow-hidden">
-    <div class="absolute top-1/4 -left-24 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <a routerLink="/home" class="flex items-center gap-3 mb-16">
-      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
-        <i class="fas fa-calendar-star text-white"></i>
-      </div>
-      <span class="text-white font-bold text-xl" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
-    </a>
-    <h2 class="text-4xl font-black text-white mb-4 leading-snug" style="font-family:'Poppins',sans-serif">
-      Join the<br><span class="text-indigo-300">Learning Revolution</span>
-    </h2>
-    <p class="text-indigo-300 text-lg max-w-sm leading-relaxed">Create your free account and unlock access to hundreds of professional workshops instantly.</p>
-    <div class="mt-10 grid grid-cols-2 gap-4">
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-        <p class="text-3xl font-black text-white" style="font-family:'Poppins',sans-serif">500+</p>
-        <p class="text-indigo-300 text-xs mt-1">Workshops</p>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-        <p class="text-3xl font-black text-white" style="font-family:'Poppins',sans-serif">12K+</p>
-        <p class="text-indigo-300 text-xs mt-1">Members</p>
-      </div>
+<div class="auth-shell">
+  <div class="auth-hero">
+    <div class="auth-orb"></div>
+    <div class="auth-orb orb-secondary"></div>
+    <div class="auth-brand">
+      <div class="brand-mark"><i class="fas fa-calendar-star"></i></div>
+      <span>WorkshopHub</span>
+    </div>
+    <h2>Launch your workshop journey</h2>
+    <p>Create a free account to unlock curated events, bookings, and feedback insights.</p>
+    <div class="auth-points">
+      <div><i class="fas fa-check"></i> Instant access to new workshops</div>
+      <div><i class="fas fa-check"></i> Personalized booking dashboard</div>
+      <div><i class="fas fa-check"></i> Verified organizer network</div>
     </div>
   </div>
 
-  <!-- Right form -->
-  <div class="flex items-center justify-center w-full lg:w-auto lg:min-w-[520px] px-6 py-10 bg-white overflow-y-auto">
-    <div class="w-full max-w-sm">
-      <a routerLink="/home" class="flex lg:hidden items-center gap-3 mb-6 justify-center">
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
-          <i class="fas fa-calendar-star text-white text-sm"></i>
-        </div>
-        <span class="font-bold text-gray-900 text-xl" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
-      </a>
+  <div class="auth-card">
+    <div class="auth-title">
+      <h1>Registration</h1>
+      <p class="muted">Join the community in minutes</p>
+    </div>
 
-      <h1 class="text-2xl font-black text-gray-900 mb-1" style="font-family:'Poppins',sans-serif">Create Account</h1>
-      <p class="text-gray-400 text-sm mb-6">Join thousands of learners on WorkshopHub</p>
+    <div *ngIf="errorMessage" class="auth-alert error">
+      <i class="fas fa-circle-exclamation"></i>
+      <span>{{errorMessage}}</span>
+    </div>
+    <div *ngIf="successMessage" class="auth-alert success">
+      <i class="fas fa-circle-check"></i>
+      <span>{{successMessage}}</span>
+    </div>
 
-      <div *ngIf="errorMessage" class="flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">
-        <i class="fas fa-circle-exclamation mt-0.5 flex-shrink-0"></i><span>{{errorMessage}}</span>
+    <form (ngSubmit)="onRegister()" #regForm="ngForm">
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-user"></i></span>
+        <input type="text" name="username" [(ngModel)]="user.Username" required placeholder=" ">
+        <label>Full name *</label>
       </div>
-      <div *ngIf="successMessage" class="flex items-start gap-3 bg-green-50 border border-green-200 text-green-600 rounded-xl px-4 py-3 mb-4 text-sm">
-        <i class="fas fa-circle-check mt-0.5 flex-shrink-0"></i><span>{{successMessage}}</span>
+
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-envelope"></i></span>
+        <input type="email" name="email" [(ngModel)]="user.Email" required placeholder=" ">
+        <label>Email address *</label>
       </div>
 
-      <form (ngSubmit)="onRegister()" #regForm="ngForm" class="space-y-4">
-        <div class="grid grid-cols-2 gap-3">
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Full Name</label>
-            <div class="relative">
-              <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <input type="text" name="username" [(ngModel)]="user.Username" required
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition"
-                placeholder="Your full name">
-            </div>
-          </div>
-
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Email Address</label>
-            <div class="relative">
-              <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <input type="email" name="email" [(ngModel)]="user.Email" required
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition"
-                placeholder="you@example.com">
-            </div>
-          </div>
-
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Password</label>
-            <div class="relative">
-              <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <input type="password" name="password" [(ngModel)]="user.Password" required
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition"
-                placeholder="Min. 8 characters">
-            </div>
-          </div>
-
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Mobile Number</label>
-            <div class="relative">
-              <i class="fas fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <input type="tel" name="mobileNumber" [(ngModel)]="user.MobileNumber" required
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition"
-                placeholder="+91 9876543210">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Role</label>
-            <div class="relative">
-              <i class="fas fa-shield absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <select name="userRole" [(ngModel)]="user.UserRole" required
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition appearance-none">
-                <option value="">Select</option>
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Secret Key <span class="text-gray-300 font-normal">(Admin)</span></label>
-            <div class="relative">
-              <i class="fas fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-              <input type="password" name="secretKey" [(ngModel)]="user.SecretKey"
-                class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 hover:bg-white transition"
-                placeholder="Optional">
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" [disabled]="loading"
-          class="w-full py-3 rounded-xl text-white text-sm font-semibold shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          style="background:linear-gradient(135deg,#6366f1,#a855f7)">
-          <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
-          <i *ngIf="!loading" class="fas fa-user-plus"></i>
-          {{ loading ? 'Creating account...' : 'Create Account' }}
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-lock"></i></span>
+        <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="user.Password" required placeholder=" ">
+        <label>Password *</label>
+        <button type="button" class="eye-btn" (click)="showPassword = !showPassword" tabindex="-1">
+          <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
         </button>
-      </form>
-
-      <div class="mt-6 text-center">
-        <p class="text-gray-400 text-sm">
-          Already have an account?
-          <button (click)="goToLogin()" class="text-indigo-600 font-semibold hover:text-indigo-700 transition ml-1">Sign in</button>
-        </p>
       </div>
-      <a routerLink="/home" class="flex items-center justify-center gap-2 mt-4 text-gray-300 hover:text-gray-500 text-xs transition">
-        <i class="fas fa-arrow-left"></i> Back to home
-      </a>
+
+      <div class="field" [class.field-error]="confirmPasswordError">
+        <span class="field-icon"><i class="fas fa-lock-keyhole"></i></span>
+        <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmPassword" [(ngModel)]="confirmPassword"
+               required placeholder=" "
+               (ngModelChange)="confirmPasswordError = ''">
+        <label>Confirm password *</label>
+        <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+          <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+        </button>
+      </div>
+      <div *ngIf="confirmPasswordError" class="field-hint error-hint">
+        <i class="fas fa-triangle-exclamation"></i> {{confirmPasswordError}}
+      </div>
+
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-phone"></i></span>
+        <input type="tel" name="mobileNumber" [(ngModel)]="user.MobileNumber" required placeholder=" ">
+        <label>Mobile number *</label>
+      </div>
+
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-shield"></i></span>
+        <select name="userRole" [(ngModel)]="user.UserRole" required>
+          <option value="" disabled selected></option>
+          <option value="User">User</option>
+          <option value="Admin">Admin</option>
+        </select>
+        <label>Role *</label>
+      </div>
+
+      <div class="field">
+        <span class="field-icon"><i class="fas fa-key"></i></span>
+        <input type="password" name="secretKey" [(ngModel)]="user.SecretKey" placeholder=" ">
+        <label>Secret key (Admin)</label>
+      </div>
+
+      <button type="submit" [disabled]="loading" class="btn-primary auth-submit">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+        <i *ngIf="!loading" class="fas fa-user-plus"></i>
+        {{ loading ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <span class="muted">Already registered?</span>
+      <button (click)="goToLogin()" class="link-btn">Sign in</button>
     </div>
   </div>
 </div>

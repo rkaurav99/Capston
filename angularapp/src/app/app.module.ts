@@ -16,6 +16,7 @@ import { RegisterComponent } from './components/register/register.component';
 
 // Shared
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 // Admin
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
@@ -32,6 +33,9 @@ import { AddBookingComponent } from './components/user/add-booking/add-booking.c
 import { UserMyBookingsComponent } from './components/user/user-my-bookings/user-my-bookings.component';
 import { UserFeedbackComponent } from './components/user/user-feedback/user-feedback.component';
 
+// Profile
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,6 +43,7 @@ import { UserFeedbackComponent } from './components/user/user-feedback/user-feed
     LoginComponent,
     RegisterComponent,
     NavbarComponent,
+    ThemeToggleComponent,
     AdminDashboardComponent,
     AdminWorkshopEventListComponent,
     AddWorkshopEventComponent,
@@ -49,7 +54,8 @@ import { UserFeedbackComponent } from './components/user/user-feedback/user-feed
     UserWorkshopEventListComponent,
     AddBookingComponent,
     UserMyBookingsComponent,
-    UserFeedbackComponent
+    UserFeedbackComponent,
+    EditProfileComponent
   ],
   imports: [
     BrowserModule,

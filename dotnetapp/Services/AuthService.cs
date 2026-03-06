@@ -100,6 +100,38 @@ namespace dotnetapp.Services
             return (1, token);
         }
 
+        public async Task<User?> GetUserById(int userId)
+        {
+            return await Task.FromResult(_context.Users.FirstOrDefault(u => u.UserId == userId));
+        }
+
+        public async Task<(int, string)> UpdateUser(int userId, User model)
+        {
+            var existing = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            if (existing == null)
+                return (0, "User not found");
+
+            existing.Username = model.Username;
+            existing.MobileNumber = model.MobileNumber;
+
+            // Update password if provided
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                // Update in Identity as well
+                var identityUser = await userManager.FindByEmailAsync(existing.Email);
+                if (identityUser != null)
+                {
+                    var token = await userManager.GeneratePasswordResetTokenAsync(identityUser);
+                    await userManager.ResetPasswordAsync(identityUser, token, model.Password);
+                }
+                existing.Password = model.Password;
+            }
+
+            _context.Users.Update(existing);
+            await _context.SaveChangesAsync();
+            return (1, "Profile updated successfully");
+        }
+
         private string GenerateToken(IEnumerable<Claim> claims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,15 @@ import { filter } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   showSidebar = false;
+  sidebarCollapsed = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private themeService: ThemeService
+  ) {}
 
   ngOnInit(): void {
+    this.themeService.initializeTheme();
     this.checkRoute(this.router.url);
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)

@@ -1,76 +1,115 @@
-<!-- Fixed Sidebar -->
-<aside class="sidebar fixed inset-y-0 left-0 z-50 w-64 flex flex-col">
-
-  <!-- Brand -->
-  <div class="flex items-center px-5 py-5 border-b border-white/10">
-    <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
-         style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
-      <i class="fas fa-calendar-star text-white"></i>
+<!-- Public Topbar -->
+<nav *ngIf="!showSidebar" class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <div class="brand-mark">
+        <i class="fas fa-calendar-star"></i>
+      </div>
+      <h1 class="brand-title">WORKSHOP EVENT MANAGEMENT SYSTEM</h1>
     </div>
-    <div>
-      <h1 class="text-white font-bold text-base leading-tight" style="font-family:'Poppins',sans-serif">WorkshopHub</h1>
-      <p class="text-indigo-400 text-xs">Event Management</p>
+    <div class="topbar-actions">
+      <div class="topbar-links" *ngIf="!isLoggedIn">
+        <a routerLink="/login" class="btn-ghost">Login</a>
+        <a routerLink="/register" class="btn-primary">Register</a>
+      </div>
+      <div class="topbar-links" *ngIf="isLoggedIn">
+        <button class="btn-ghost" (click)="goDashboard()">Dashboard</button>
+        <button class="btn-primary" (click)="logout()">Sign Out</button>
+      </div>
+      <button class="mobile-toggle" (click)="toggleMobileMenu()" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </div>
-
-  <!-- User badge -->
-  <div class="px-5 py-3 border-b border-white/10">
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-           style="background:linear-gradient(135deg,#6366f1,#a78bfa)">
-        <i class="fas fa-user text-white text-xs"></i>
-      </div>
-      <div>
-        <p class="text-white text-sm font-semibold leading-tight">{{ userRole === 'Admin' ? 'Administrator' : 'Member' }}</p>
-        <span class="text-indigo-400 text-xs">{{ userRole === 'Admin' ? 'Full Access' : 'Standard' }}</span>
-      </div>
-    </div>
+  <div *ngIf="mobileMenuOpen" class="mobile-menu">
+    <ng-container *ngIf="!isLoggedIn">
+      <a routerLink="/login" (click)="toggleMobileMenu()">Login</a>
+      <a routerLink="/register" (click)="toggleMobileMenu()">Register</a>
+    </ng-container>
+    <ng-container *ngIf="isLoggedIn">
+      <button (click)="goDashboard(); toggleMobileMenu()">Dashboard</button>
+      <button (click)="logout(); toggleMobileMenu()">Sign Out</button>
+    </ng-container>
   </div>
+</nav>
 
-  <!-- Navigation -->
-  <nav class="flex-1 px-3 py-4 overflow-y-auto">
-
-    <!-- Admin links -->
-    <ng-container *ngIf="userRole === 'Admin'">
-      <p class="px-4 pt-1 pb-2 text-indigo-500 text-xs font-semibold uppercase tracking-widest">Administration</p>
-      <a routerLink="/admin/dashboard" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-chart-pie w-4 text-center"></i><span>Dashboard</span></a>
-      <a routerLink="/admin/workshop-events" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-calendar-days w-4 text-center"></i><span>Workshop Events</span></a>
-      <a routerLink="/admin/bookings" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-ticket w-4 text-center"></i><span>Bookings</span></a>
-      <a routerLink="/admin/feedbacks" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-comments w-4 text-center"></i><span>Feedback</span></a>
-    </ng-container>
-
-    <!-- User links -->
-    <ng-container *ngIf="userRole !== 'Admin'">
-      <p class="px-4 pt-1 pb-2 text-indigo-500 text-xs font-semibold uppercase tracking-widest">Main Menu</p>
-      <a routerLink="/user/dashboard" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-chart-pie w-4 text-center"></i><span>Dashboard</span></a>
-      <a routerLink="/user/workshop-events" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-calendar-days w-4 text-center"></i><span>Browse Events</span></a>
-      <a routerLink="/user/my-bookings" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-ticket w-4 text-center"></i><span>My Bookings</span></a>
-      <a routerLink="/user/feedback" routerLinkActive="active-nav"
-        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
-        <i class="fas fa-star w-4 text-center"></i><span>Feedback</span></a>
-    </ng-container>
-  </nav>
-
-  <!-- Sign out -->
-  <div class="px-3 py-4 border-t border-white/10">
-    <button (click)="logout()"
-      class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-red-300 hover:bg-red-500/10 transition-all duration-150 text-sm font-medium">
-      <i class="fas fa-right-from-bracket w-4 text-center"></i>
-      <span>Sign Out</span>
+<!-- Authenticated Sidebar -->
+<ng-container *ngIf="showSidebar">
+  <div class="sidebar-overlay" *ngIf="sidebarOpen" (click)="toggleSidebar()"></div>
+  <header class="sidebar-topbar">
+    <button class="mobile-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
     </button>
-  </div>
-</aside>
+    <h1 class="brand-title">WORKSHOP EVENT MANAGEMENT SYSTEM</h1>
+  </header>
+
+  <aside class="sidebar" [class.sidebar-open]="sidebarOpen" [class.sidebar-collapsed]="sidebarCollapsed">
+
+    <!-- Brand / Logo — click to go to dashboard -->
+    <div class="sidebar-brand" (click)="goDashboard()" title="Go to Dashboard">
+      <div class="brand-mark">
+        <i class="fas fa-calendar-star"></i>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-title">WORKSHOP<br>HUB</h1>
+        <p class="muted text-xs brand-sub">Event Operations</p>
+      </div>
+      <!-- Collapse toggle button -->
+      <button class="collapse-btn" (click)="$event.stopPropagation(); toggleCollapsed()"
+        [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+        [title]="sidebarCollapsed ? 'Expand' : 'Collapse'">
+        <i class="fas" [class.fa-chevron-left]="!sidebarCollapsed" [class.fa-chevron-right]="sidebarCollapsed"></i>
+      </button>
+    </div>
+
+    <!-- User info -->
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-info">
+        <p class="text-sm font-semibold">{{ userRole === 'Admin' ? 'Administrator' : 'Member' }}</p>
+        <span class="muted text-xs">{{ userRole === 'Admin' ? 'Full Access' : 'Standard' }}</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ng-container *ngIf="userRole === 'Admin'">
+        <p class="nav-label">Administration</p>
+        <a routerLink="/admin/dashboard" routerLinkActive="active-nav" class="nav-link" title="Dashboard">
+          <i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a>
+        <a routerLink="/admin/workshop-events" routerLinkActive="active-nav" class="nav-link" title="Workshop Events">
+          <i class="fas fa-calendar-days"></i><span class="nav-text">Workshop Events</span></a>
+        <a routerLink="/admin/bookings" routerLinkActive="active-nav" class="nav-link" title="Bookings">
+          <i class="fas fa-ticket"></i><span class="nav-text">Bookings</span></a>
+        <a routerLink="/admin/feedbacks" routerLinkActive="active-nav" class="nav-link" title="Feedback">
+          <i class="fas fa-comments"></i><span class="nav-text">Feedback</span></a>
+        <p class="nav-label nav-label-gap">Account</p>
+        <a routerLink="/edit-profile" routerLinkActive="active-nav" class="nav-link" title="Edit Profile">
+          <i class="fas fa-user-pen"></i><span class="nav-text">Edit Profile</span></a>
+      </ng-container>
+
+      <ng-container *ngIf="userRole !== 'Admin'">
+        <p class="nav-label">Main Menu</p>
+        <a routerLink="/user/dashboard" routerLinkActive="active-nav" class="nav-link" title="Dashboard">
+          <i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a>
+        <a routerLink="/user/workshop-events" routerLinkActive="active-nav" class="nav-link" title="Browse Events">
+          <i class="fas fa-calendar-days"></i><span class="nav-text">Browse Events</span></a>
+        <a routerLink="/user/my-bookings" routerLinkActive="active-nav" class="nav-link" title="My Bookings">
+          <i class="fas fa-ticket"></i><span class="nav-text">My Bookings</span></a>
+        <a routerLink="/user/feedback" routerLinkActive="active-nav" class="nav-link" title="Feedback">
+          <i class="fas fa-star"></i><span class="nav-text">Feedback</span></a>
+        <p class="nav-label nav-label-gap">Account</p>
+        <a routerLink="/edit-profile" routerLinkActive="active-nav" class="nav-link" title="Edit Profile">
+          <i class="fas fa-user-pen"></i><span class="nav-text">Edit Profile</span></a>
+      </ng-container>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button (click)="logout()" class="logout-btn" title="Sign Out">
+        <i class="fas fa-right-from-bracket"></i>
+        <span class="nav-text">Sign Out</span>
+      </button>
+    </div>
+  </aside>
+</ng-container>
