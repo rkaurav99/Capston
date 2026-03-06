@@ -1,68 +1,101 @@
-<div class="container">
-  <h2>Feedback</h2>
+<!-- Header -->
+<div class="bg-white border-b border-gray-100 px-8 py-6">
+  <h1 class="text-2xl font-black text-gray-900" style="font-family:'Poppins',sans-serif">Feedback</h1>
+  <p class="text-gray-400 text-sm mt-0.5">Share your experience and read responses from organisers</p>
+</div>
 
-  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-  <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+<div class="p-8 space-y-6">
 
-  <!-- Add Feedback Form -->
-  <div class="feedback-form">
-    <h3>Submit Feedback</h3>
+  <!-- Submit Feedback Card -->
+  <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+    <h2 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
+      <i class="fas fa-pen-to-square text-indigo-500"></i> Submit New Feedback
+    </h2>
 
-    <div class="form-group">
-      <label>Related Booking <span class="optional">(optional)</span></label>
-      <select [(ngModel)]="selectedBookingId">
-        <option [ngValue]="null">-- General feedback (not for a specific booking) --</option>
-        <option *ngFor="let b of bookings" [ngValue]="b.BookingId">
-          Booking #{{ b.BookingId }} &ndash; Event #{{ b.WorkshopEventId }} &ndash; {{ b.BookingStatus }}
-        </option>
-      </select>
+    <div *ngIf="errorMessage" class="flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">
+      <i class="fas fa-circle-exclamation mt-0.5"></i><span>{{errorMessage}}</span>
+    </div>
+    <div *ngIf="successMessage" class="flex items-start gap-3 bg-green-50 border border-green-200 text-green-600 rounded-xl px-4 py-3 mb-4 text-sm">
+      <i class="fas fa-circle-check mt-0.5"></i><span>{{successMessage}}</span>
     </div>
 
-    <div class="form-group">
-      <label>Your Feedback</label>
-      <textarea
-        [(ngModel)]="newFeedbackText"
-        rows="4"
-        placeholder="Describe your experience, suggestions, or any issues..."
-        required
-      ></textarea>
-    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Related Booking <span class="text-gray-300 font-normal">(optional)</span></label>
+        <div class="relative">
+          <i class="fas fa-ticket absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <select [(ngModel)]="selectedBookingId"
+            class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-gray-50 appearance-none transition">
+            <option [ngValue]="null">-- Select a booking (optional) --</option>
+            <option *ngFor="let b of bookings" [ngValue]="b.BookingId">Booking #{{b.BookingId}} — Event #{{b.WorkshopEventId}}</option>
+          </select>
+        </div>
+      </div>
 
-    <button class="btn-submit" (click)="addFeedback()" [disabled]="!newFeedbackText.trim() || loading">
-      {{ loading ? 'Submitting...' : 'Submit Feedback' }}
-    </button>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Your Feedback</label>
+        <textarea [(ngModel)]="newFeedbackText" rows="4"
+          class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-gray-50 resize-none transition"
+          placeholder="Share your thoughts about the workshop experience..."></textarea>
+      </div>
+
+      <button (click)="addFeedback()" [disabled]="loading || !newFeedbackText.trim()"
+        class="px-6 py-2.5 rounded-xl text-white text-sm font-semibold shadow transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+        style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+        <i *ngIf="!loading" class="fas fa-paper-plane"></i>
+        {{ loading ? 'Submitting...' : 'Submit Feedback' }}
+      </button>
+    </div>
   </div>
 
   <!-- Feedback List -->
-  <div class="feedback-list">
-    <h3>My Feedbacks</h3>
-
-    <div class="no-data" *ngIf="feedbacks.length === 0">
-      You haven't submitted any feedback yet.
+  <div class="bg-white border border-gray-100 rounded-2xl shadow-sm">
+    <div class="px-6 py-5 border-b border-gray-50">
+      <h2 class="font-bold text-gray-900 flex items-center gap-2">
+        <i class="fas fa-comments text-indigo-500"></i> My Feedback History
+      </h2>
     </div>
 
-    <div class="feedback-card" *ngFor="let feedback of feedbacks">
-      <div class="feedback-header">
-        <span class="feedback-date">{{ feedback.Date | date:'medium' }}</span>
-        <button class="btn-delete" (click)="deleteFeedback(feedback.FeedbackId)">Delete</button>
+    <div *ngIf="feedbacks.length === 0" class="py-12 text-center">
+      <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+        <i class="fas fa-comment-slash text-indigo-200 text-xl"></i>
       </div>
+      <p class="text-gray-400 text-sm">No feedback submitted yet</p>
+    </div>
 
-      <div class="booking-ref" *ngIf="feedback.Booking">
-        <span class="label">Booking:</span>
-        <span>#{{ feedback.Booking.BookingId }}
-          <ng-container *ngIf="feedback.Booking.WorkshopEvent">&nbsp;&ndash;&nbsp;{{ feedback.Booking.WorkshopEvent.EventName }}</ng-container>
-          &nbsp;<span class="status-badge status-{{ feedback.Booking.BookingStatus | lowercase }}">{{ feedback.Booking.BookingStatus }}</span>
-        </span>
-      </div>
+    <div class="divide-y divide-gray-50">
+      <div *ngFor="let fb of feedbacks" class="p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                <i class="fas fa-user text-indigo-500 text-xs"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">Booking #{{fb.BookingId || 'General'}}</p>
+                <p class="text-xs text-gray-400">{{fb.Date | date:'MMM d, y'}}</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed mb-3">{{fb.FeedbackText}}</p>
 
-      <p class="feedback-text">{{ feedback.FeedbackText }}</p>
-
-      <div class="admin-response" *ngIf="feedback.AdminResponse">
-        <div class="response-label">&#128236; Admin Response <span class="response-date">{{ feedback.ResponseDate | date:'medium' }}</span></div>
-        <p class="response-text">{{ feedback.AdminResponse }}</p>
-      </div>
-      <div class="awaiting-response" *ngIf="!feedback.AdminResponse">
-        <span>&#9203; Awaiting admin response</span>
+            <!-- Admin Response -->
+            <div *ngIf="fb.AdminResponse" class="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+              <p class="text-xs font-semibold text-indigo-700 mb-1 flex items-center gap-1.5">
+                <i class="fas fa-headset"></i> Admin Response
+              </p>
+              <p class="text-indigo-600 text-sm">{{fb.AdminResponse}}</p>
+              <p class="text-indigo-400 text-xs mt-1">{{fb.ResponseDate | date:'MMM d, y'}}</p>
+            </div>
+            <div *ngIf="!fb.AdminResponse" class="flex items-center gap-1.5 text-gray-300 text-xs mt-1">
+              <i class="fas fa-clock text-xs"></i> Awaiting admin response
+            </div>
+          </div>
+          <button (click)="deleteFeedback(fb.FeedbackId)"
+            class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 flex items-center justify-center transition text-red-400 hover:text-red-600">
+            <i class="fas fa-trash text-xs"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

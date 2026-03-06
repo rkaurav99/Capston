@@ -46,9 +46,9 @@ export class LoginComponent implements OnInit {
 
   private redirectByRole(role: string): void {
     if (role === 'Admin') {
-      this.router.navigate(['/admin/workshop-events']);
+      this.router.navigate(['/admin/dashboard']);
     } else {
-      this.router.navigate(['/user/workshop-events']);
+      this.router.navigate(['/user/dashboard']);
     }
   }
 

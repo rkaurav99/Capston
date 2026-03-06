@@ -1,52 +1,95 @@
-<div class="container">
-  <div class="header">
-    <h2>Workshop Events</h2>
-    <button class="btn-add" (click)="addEvent()">+ Add Event</button>
+<!-- Header -->
+<div class="bg-white border-b border-gray-100 px-8 py-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-black text-gray-900" style="font-family:'Poppins',sans-serif">Workshop Events</h1>
+      <p class="text-gray-400 text-sm mt-0.5">Create, edit and manage all workshop events</p>
+    </div>
+    <a routerLink="/admin/add-workshop-event"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm hover:opacity-90 transition"
+      style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+      <i class="fas fa-plus"></i> New Workshop
+    </a>
+  </div>
+</div>
+
+<div class="p-8">
+  <!-- Search -->
+  <div class="flex flex-col sm:flex-row gap-3 mb-6">
+    <div class="relative flex-1">
+      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input type="text" [(ngModel)]="searchText" placeholder="Search workshops..."
+        class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    </div>
+    <span class="self-center text-xs text-gray-400 font-medium">{{filteredEvents.length}} workshops</span>
   </div>
 
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Search by name, category, organizer, or location..."
-      [(ngModel)]="searchText"
-    />
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 rounded-xl px-5 py-4 mb-6 text-sm">
+    <i class="fas fa-triangle-exclamation"></i> {{errorMessage}}
   </div>
 
-  <div class="error-message" *ngIf="errorMessage">
-    {{ errorMessage }}
+  <!-- Empty -->
+  <div *ngIf="!errorMessage && filteredEvents.length === 0" class="bg-white rounded-2xl border border-gray-100 p-16 text-center">
+    <div class="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-calendar-xmark text-indigo-300 text-3xl"></i>
+    </div>
+    <p class="text-gray-700 font-semibold text-lg mb-1">No workshops found</p>
+    <a routerLink="/admin/add-workshop-event" class="mt-3 inline-flex items-center gap-2 text-indigo-600 text-sm font-semibold hover:underline">
+      <i class="fas fa-plus"></i> Create first workshop
+    </a>
   </div>
 
-  <div class="no-data" *ngIf="filteredEvents.length === 0 && !errorMessage">
-    No workshop events found.
+  <!-- Table -->
+  <div *ngIf="filteredEvents.length > 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-100">
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Event</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Organiser</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Capacity</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          <tr *ngFor="let ev of filteredEvents" class="hover:bg-gray-50 transition">
+            <td class="px-6 py-4">
+              <div>
+                <p class="font-semibold text-gray-900">{{ev.EventName}}</p>
+                <p class="text-gray-400 text-xs mt-0.5 flex items-center gap-1">
+                  <i class="fas fa-location-dot text-xs text-indigo-400"></i> {{ev.Location}}
+                </p>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-gray-600">{{ev.OrganizerName}}</td>
+            <td class="px-6 py-4">
+              <span class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-2.5 py-1 rounded-full">{{ev.Category}}</span>
+            </td>
+            <td class="px-6 py-4 text-gray-500 text-xs">{{ev.StartDateTime | date:'MMM d, y'}}</td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-1.5">
+                <i class="fas fa-users text-indigo-400 text-xs"></i>
+                <span class="text-gray-700 font-medium">{{ev.Capacity}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <button (click)="editEvent(ev.WorkshopEventId)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition text-xs font-semibold">
+                  <i class="fas fa-pen text-xs"></i> Edit
+                </button>
+                <button (click)="deleteEvent(ev.WorkshopEventId)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition text-xs font-semibold">
+                  <i class="fas fa-trash text-xs"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <table *ngIf="filteredEvents.length > 0">
-    <thead>
-      <tr>
-        <th>Event Name</th>
-        <th>Organizer</th>
-        <th>Category</th>
-        <th>Location</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Capacity</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let event of filteredEvents">
-        <td>{{ event.EventName }}</td>
-        <td>{{ event.OrganizerName }}</td>
-        <td>{{ event.Category }}</td>
-        <td>{{ event.Location }}</td>
-        <td>{{ event.StartDateTime | date:'medium' }}</td>
-        <td>{{ event.EndDateTime | date:'medium' }}</td>
-        <td>{{ event.Capacity }}</td>
-        <td class="actions">
-          <button class="btn-edit" (click)="editEvent(event.WorkshopEventId)">Edit</button>
-          <button class="btn-delete" (click)="deleteEvent(event.WorkshopEventId)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>

@@ -1,4 +1,26 @@
-/* ===== GLOBAL STYLES — Workshop Event Management ===== */
+/* ===== GLOBAL STYLES — WorkshopHub Platform ===== */
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+/* Smooth transitions everywhere */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Badge variants */
+.badge-submitted  { background:#ede9fe; color:#7c3aed; }
+.badge-approved   { background:#d1fae5; color:#065f46; }
+.badge-cancelled  { background:#fee2e2; color:#991b1b; }
+.badge-pending    { background:#fef3c7; color:#92400e; }
+
+/* Glass card */
+.glass { background: rgba(255,255,255,.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.2); }
+
+/* Prose */
+.font-display { font-family: 'Poppins', system-ui, sans-serif; }
+
+/* ===== WAS: GLOBAL STYLES — Workshop Event Management ===== */
 
 /* ---------- CSS Custom Properties ---------- */
 :root {

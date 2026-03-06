@@ -1,0 +1,341 @@
+<div class="min-h-screen bg-white">
+
+  <!-- ===== TOP NAV (public) ===== -->
+  <header class="absolute top-0 left-0 right-0 z-40 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
+          <i class="fas fa-calendar-star text-white text-sm"></i>
+        </div>
+        <span class="text-white font-bold text-xl" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <ng-container *ngIf="!isLoggedIn()">
+          <button (click)="goLogin()" class="text-white/80 hover:text-white px-4 py-2 text-sm font-medium transition">Log In</button>
+          <button (click)="goRegister()" class="bg-white text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-xl text-sm font-semibold shadow transition">Get Started</button>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn()">
+          <button (click)="goDashboard()" class="bg-white text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-xl text-sm font-semibold shadow transition">
+            <i class="fas fa-gauge-high mr-2"></i>Dashboard
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero-gradient relative flex items-center justify-center min-h-screen overflow-hidden">
+    <!-- Decorative blobs -->
+    <div class="absolute top-20 left-16 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-20 right-16 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
+      <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-indigo-200 text-xs font-semibold px-4 py-2 rounded-full mb-6">
+        <i class="fas fa-sparkles text-yellow-400"></i> Over 500 Workshops Available
+      </span>
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6" style="font-family:'Poppins',sans-serif">
+        Discover &amp; Book <br>
+        <span class="text-transparent bg-clip-text" style="background:linear-gradient(135deg,#a5b4fc,#c084fc)">Amazing Workshops</span>
+      </h1>
+      <p class="text-indigo-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+        Upskill, network, and grow with hundreds of professional workshops across technology, design, business & more.
+      </p>
+
+      <!-- Search bar -->
+      <div class="flex flex-col sm:flex-row items-center gap-3 max-w-xl mx-auto mb-10">
+        <div class="relative flex-1 w-full">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" [(ngModel)]="searchText" placeholder="Search workshops, categories..."
+            class="w-full pl-11 pr-4 py-4 rounded-2xl text-gray-800 bg-white shadow-2xl focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm">
+        </div>
+        <button (click)="goLogin()" class="w-full sm:w-auto px-7 py-4 rounded-2xl font-semibold text-sm shadow-2xl transition-all duration-200 hover:scale-105"
+          style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff">
+          <i class="fas fa-arrow-right mr-2"></i>Explore
+        </button>
+      </div>
+
+      <!-- Quick stats row -->
+      <div class="flex flex-wrap justify-center gap-6">
+        <div *ngFor="let s of stats" class="flex items-center gap-2 text-white/80">
+          <i [class]="s.icon" class="text-sm" [style.color]="s.color"></i>
+          <span class="font-bold text-white">{{s.value}}</span>
+          <span class="text-sm">{{s.label}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-xs flex flex-col items-center gap-2 floating">
+      <span>Scroll to explore</span>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORIES ===== -->
+  <section class="py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Explore By Category</span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Find Your Niche</h2>
+        <p class="text-gray-500 mt-3 max-w-xl mx-auto">From cutting-edge tech to creative arts, we have workshops that match every passion and career goal.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+        <button *ngFor="let cat of categories" (click)="goLogin()"
+          class="card-hover flex flex-col items-center gap-3 p-5 rounded-2xl bg-white border border-gray-100 shadow-sm cursor-pointer">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+               [style.background]="cat.bg" [style.color]="cat.color">
+            <i [class]="cat.icon + ' text-xl'"></i>
+          </div>
+          <span class="text-gray-700 text-xs font-semibold text-center">{{cat.name}}</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED EVENTS ===== -->
+  <section class="py-20 px-4 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Don't Miss Out</span>
+          <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Featured Workshops</h2>
+        </div>
+        <button (click)="goLogin()" class="hidden sm:flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:text-indigo-800 transition">
+          View All <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Dynamic events from API -->
+      <div *ngIf="featuredEvents.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let ev of featuredEvents" class="card-hover bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+          <div class="h-3 w-full" style="background:linear-gradient(135deg,#6366f1,#a855f7)"></div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-3">
+              <span class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full">
+                <i class="fas fa-tag text-xs"></i> {{ev.Category}}
+              </span>
+              <span class="text-xs text-gray-400 font-medium">{{daysUntil(ev.StartDateTime)}}d left</span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg mb-1 leading-snug">{{ev.EventName}}</h3>
+            <p class="text-gray-500 text-sm mb-4 flex items-center gap-1.5">
+              <i class="fas fa-user text-xs text-indigo-400"></i> {{ev.OrganizerName}}
+            </p>
+            <p class="text-gray-600 text-sm mb-5 line-clamp-2 leading-relaxed">{{ev.Description}}</p>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 text-gray-400 text-xs">
+                <i class="fas fa-location-dot text-indigo-400"></i>
+                <span class="truncate max-w-[110px]">{{ev.Location}}</span>
+              </div>
+              <div class="flex items-center gap-1 text-gray-400 text-xs">
+                <i class="fas fa-users text-indigo-400"></i>
+                <span>{{ev.Capacity}} seats</span>
+              </div>
+            </div>
+            <button (click)="goLogin()"
+              class="mt-5 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+              style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+              Book Now <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder cards when no data -->
+      <div *ngIf="featuredEvents.length === 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5,6]" class="card-hover bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+          <div class="h-3" style="background:linear-gradient(135deg,#6366f1,#a855f7)"></div>
+          <div class="p-6">
+            <span class="inline-block bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full mb-3">Workshop</span>
+            <div class="h-5 bg-gray-100 rounded mb-2 w-3/4 animate-pulse"></div>
+            <div class="h-4 bg-gray-100 rounded mb-4 w-1/2 animate-pulse"></div>
+            <div class="h-3 bg-gray-100 rounded mb-1 animate-pulse"></div>
+            <div class="h-3 bg-gray-100 rounded mb-5 w-5/6 animate-pulse"></div>
+            <button (click)="goLogin()" class="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+              Log in to Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="py-20 px-4 bg-gray-50">
+    <div class="max-w-5xl mx-auto text-center mb-14">
+      <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Simple Process</span>
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">How It Works</h2>
+    </div>
+    <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
+      <!-- Connector line -->
+      <div class="hidden sm:block absolute top-10 left-1/3 right-1/3 h-0.5 bg-indigo-100 z-0"></div>
+
+      <div class="relative z-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#6366f1,#818cf8)">
+          <i class="fas fa-magnifying-glass text-white text-2xl"></i>
+        </div>
+        <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 text-sm font-bold flex items-center justify-center mb-3">1</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Discover</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Browse hundreds of workshops by category, date, or location. Use search and filters to find exactly what you need.</p>
+      </div>
+
+      <div class="relative z-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#a855f7,#c084fc)">
+          <i class="fas fa-ticket text-white text-2xl"></i>
+        </div>
+        <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-600 text-sm font-bold flex items-center justify-center mb-3">2</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Book</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Reserve your spot with our instant booking system. Get confirmation immediately and add it to your calendar.</p>
+      </div>
+
+      <div class="relative z-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#10b981,#34d399)">
+          <i class="fas fa-rocket text-white text-2xl"></i>
+        </div>
+        <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 text-sm font-bold flex items-center justify-center mb-3">3</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Grow</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Attend, learn from experts, network with peers, and track your professional development journey over time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATISTICS ===== -->
+  <section class="py-20 px-4" style="background:linear-gradient(135deg,#1e1b4b,#312e81,#4c1d95)">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div *ngFor="let s of stats" class="text-center">
+          <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-white/10">
+            <i [class]="s.icon + ' text-xl text-white'"></i>
+          </div>
+          <p class="text-4xl font-black text-white mb-1" style="font-family:'Poppins',sans-serif">{{s.value}}</p>
+          <p class="text-indigo-300 text-sm font-medium">{{s.label}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="py-20 px-4 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Success Stories</span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">What Our Users Say</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div *ngFor="let t of testimonials" class="card-hover bg-gray-50 border border-gray-100 rounded-2xl p-8">
+          <div class="flex mb-4">
+            <i *ngFor="let s of stars(t.rating)" class="fas fa-star text-yellow-400 text-sm mr-0.5"></i>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-6 text-sm">"{{t.text}}"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                 style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+              {{t.avatar}}
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm">{{t.name}}</p>
+              <p class="text-gray-400 text-xs">{{t.role}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="py-20 px-4 bg-gray-50">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-indigo-600 font-semibold text-sm uppercase tracking-wider">Got Questions?</span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mt-2" style="font-family:'Poppins',sans-serif">Frequently Asked</h2>
+      </div>
+      <div class="space-y-3">
+        <div *ngFor="let faq of faqs; let i = index" class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+          <button (click)="toggleFaq(i)" class="w-full flex items-center justify-between px-6 py-5 text-left"
+                  [class.text-indigo-600]="openFaq === i" [class.text-gray-900]="openFaq !== i">
+            <span class="font-semibold text-sm">{{faq.q}}</span>
+            <i class="fas transition-transform duration-200" [class.fa-chevron-up]="openFaq === i" [class.fa-chevron-down]="openFaq !== i"
+               [class.text-indigo-500]="openFaq === i" [class.text-gray-400]="openFaq !== i"></i>
+          </button>
+          <div *ngIf="openFaq === i" class="px-6 pb-5">
+            <p class="text-gray-500 text-sm leading-relaxed border-t border-gray-100 pt-4">{{faq.a}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA Banner ===== -->
+  <section class="py-20 px-4 bg-white">
+    <div class="max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl" style="background:linear-gradient(135deg,#312e81,#4c1d95,#6d28d9)">
+      <div class="relative p-12 text-center">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+        <div class="relative z-10">
+          <span class="inline-block bg-yellow-400 text-yellow-900 text-xs font-bold px-4 py-1.5 rounded-full mb-6">🚀 Limited Spots Available</span>
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-4" style="font-family:'Poppins',sans-serif">Ready to Level Up?</h2>
+          <p class="text-indigo-200 text-lg mb-8 max-w-xl mx-auto">Join over 12,000 professionals who have accelerated their careers with WorkshopHub.</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button (click)="goRegister()" class="px-8 py-4 rounded-2xl font-bold text-indigo-700 bg-white hover:bg-indigo-50 transition shadow-lg text-sm">
+              <i class="fas fa-user-plus mr-2"></i> Create Free Account
+            </button>
+            <button (click)="goLogin()" class="px-8 py-4 rounded-2xl font-bold text-white border-2 border-white/30 hover:bg-white/10 transition text-sm">
+              <i class="fas fa-right-to-bracket mr-2"></i> Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-gray-900 text-gray-400 py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
+              <i class="fas fa-calendar-star text-white text-xs"></i>
+            </div>
+            <span class="text-white font-bold" style="font-family:'Poppins',sans-serif">WorkshopHub</span>
+          </div>
+          <p class="text-sm leading-relaxed">The leading platform for workshop discovery and professional development worldwide.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Platform</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a (click)="goLogin()" class="hover:text-white cursor-pointer transition">Browse Workshops</a></li>
+            <li><a (click)="goLogin()" class="hover:text-white cursor-pointer transition">My Bookings</a></li>
+            <li><a (click)="goLogin()" class="hover:text-white cursor-pointer transition">Feedback</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Organisers</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a (click)="goRegister()" class="hover:text-white cursor-pointer transition">Create Account</a></li>
+            <li><a (click)="goLogin()" class="hover:text-white cursor-pointer transition">Admin Dashboard</a></li>
+            <li><a (click)="goLogin()" class="hover:text-white cursor-pointer transition">Manage Events</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Categories</h4>
+          <ul class="space-y-2 text-sm">
+            <li *ngFor="let cat of categories.slice(0,4)">
+              <a (click)="goLogin()" class="hover:text-white cursor-pointer transition">{{cat.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs">© 2026 WorkshopHub. Built with ♥ for learners everywhere.</p>
+        <div class="flex items-center gap-4">
+          <a class="hover:text-white transition cursor-pointer"><i class="fab fa-twitter"></i></a>
+          <a class="hover:text-white transition cursor-pointer"><i class="fab fa-linkedin"></i></a>
+          <a class="hover:text-white transition cursor-pointer"><i class="fab fa-github"></i></a>
+          <a class="hover:text-white transition cursor-pointer"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

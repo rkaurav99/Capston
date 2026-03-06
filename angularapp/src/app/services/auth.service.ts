@@ -22,38 +22,20 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   /**
-   * Base64-encode a string (used to obscure sensitive fields in the request payload).
-   */
-  private encodeBase64(value: string): string {
-    return btoa(value);
-  }
-
-  /**
    * Register a new user.
-   * Encodes Email and Password as Base64 before sending.
    */
   register(user: User): Observable<any> {
-    const encoded = {
-      ...user,
-      Email: this.encodeBase64(user.Email),
-      Password: this.encodeBase64(user.Password)
-    };
-    return this.http.post(`${this.apiUrl}/api/register`, encoded, {
+    return this.http.post(`${this.apiUrl}/api/register`, user, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 
   /**
    * Login a user.
-   * Encodes Email and Password as Base64 before sending.
    * On success, stores JWT token in localStorage and updates role/userId BehaviorSubjects.
    */
   login(login: Login): Observable<any> {
-    const encoded = {
-      Email: this.encodeBase64(login.Email),
-      Password: this.encodeBase64(login.Password)
-    };
-    return this.http.post(`${this.apiUrl}/api/login`, encoded, {
+    return this.http.post(`${this.apiUrl}/api/login`, login, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }).pipe(
       tap((response: any) => {

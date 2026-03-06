@@ -9,28 +9,18 @@ import { WorkshopEventService } from '../../../services/workshop-event.service';
   styleUrls: ['./user-workshop-event-list.component.css']
 })
 export class UserWorkshopEventListComponent implements OnInit {
-
   workshopEvents: WorkshopEvent[] = [];
-  errorMessage: string = '';
-  searchText: string = '';
+  errorMessage = '';
+  searchText = '';
 
-  constructor(
-    private workshopEventService: WorkshopEventService,
-    private router: Router
-  ) { }
+  constructor(private workshopEventService: WorkshopEventService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.loadWorkshopEvents();
-  }
+  ngOnInit(): void { this.loadWorkshopEvents(); }
 
   loadWorkshopEvents(): void {
     this.workshopEventService.getAllWorkshopEvents().subscribe(
-      (data: WorkshopEvent[]) => {
-        this.workshopEvents = data;
-      },
-      (error) => {
-        this.errorMessage = 'Failed to load workshop events.';
-      }
+      (data: WorkshopEvent[]) => { this.workshopEvents = data; },
+      () => { this.errorMessage = 'Failed to load workshop events.'; }
     );
   }
 
@@ -39,15 +29,13 @@ export class UserWorkshopEventListComponent implements OnInit {
   }
 
   get filteredEvents(): WorkshopEvent[] {
-    if (!this.searchText) {
-      return this.workshopEvents;
-    }
-    const search = this.searchText.toLowerCase();
-    return this.workshopEvents.filter(event =>
-      event.EventName.toLowerCase().includes(search) ||
-      event.Category.toLowerCase().includes(search) ||
-      event.OrganizerName.toLowerCase().includes(search) ||
-      event.Location.toLowerCase().includes(search)
+    if (!this.searchText.trim()) return this.workshopEvents;
+    const s = this.searchText.toLowerCase();
+    return this.workshopEvents.filter(ev =>
+      ev.EventName.toLowerCase().includes(s) ||
+      ev.Category.toLowerCase().includes(s) ||
+      ev.OrganizerName.toLowerCase().includes(s) ||
+      ev.Location.toLowerCase().includes(s)
     );
   }
 }

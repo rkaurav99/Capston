@@ -1,25 +1,76 @@
-<nav class="navbar" *ngIf="isLoggedIn">
-  <div class="navbar-brand">
-    <a routerLink="/">Workshop Event Management</a>
+<!-- Fixed Sidebar -->
+<aside class="sidebar fixed inset-y-0 left-0 z-50 w-64 flex flex-col">
+
+  <!-- Brand -->
+  <div class="flex items-center px-5 py-5 border-b border-white/10">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
+         style="background:linear-gradient(135deg,#818cf8,#a78bfa)">
+      <i class="fas fa-calendar-star text-white"></i>
+    </div>
+    <div>
+      <h1 class="text-white font-bold text-base leading-tight" style="font-family:'Poppins',sans-serif">WorkshopHub</h1>
+      <p class="text-indigo-400 text-xs">Event Management</p>
+    </div>
   </div>
 
-  <ul class="navbar-menu">
-    <!-- Admin Menu -->
+  <!-- User badge -->
+  <div class="px-5 py-3 border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+           style="background:linear-gradient(135deg,#6366f1,#a78bfa)">
+        <i class="fas fa-user text-white text-xs"></i>
+      </div>
+      <div>
+        <p class="text-white text-sm font-semibold leading-tight">{{ userRole === 'Admin' ? 'Administrator' : 'Member' }}</p>
+        <span class="text-indigo-400 text-xs">{{ userRole === 'Admin' ? 'Full Access' : 'Standard' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-3 py-4 overflow-y-auto">
+
+    <!-- Admin links -->
     <ng-container *ngIf="userRole === 'Admin'">
-      <li><a routerLink="/admin/workshop-events" routerLinkActive="active">Workshop Events</a></li>
-      <li><a routerLink="/admin/bookings" routerLinkActive="active">Bookings Requested</a></li>
-      <li><a routerLink="/admin/feedbacks" routerLinkActive="active">Feedbacks</a></li>
+      <p class="px-4 pt-1 pb-2 text-indigo-500 text-xs font-semibold uppercase tracking-widest">Administration</p>
+      <a routerLink="/admin/dashboard" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-chart-pie w-4 text-center"></i><span>Dashboard</span></a>
+      <a routerLink="/admin/workshop-events" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-calendar-days w-4 text-center"></i><span>Workshop Events</span></a>
+      <a routerLink="/admin/bookings" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-ticket w-4 text-center"></i><span>Bookings</span></a>
+      <a routerLink="/admin/feedbacks" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-comments w-4 text-center"></i><span>Feedback</span></a>
     </ng-container>
 
-    <!-- User Menu -->
-    <ng-container *ngIf="userRole === 'User'">
-      <li><a routerLink="/user/workshop-events" routerLinkActive="active">Workshop Events</a></li>
-      <li><a routerLink="/user/my-bookings" routerLinkActive="active">My Bookings</a></li>
-      <li><a routerLink="/user/feedback" routerLinkActive="active">Feedback</a></li>
+    <!-- User links -->
+    <ng-container *ngIf="userRole !== 'Admin'">
+      <p class="px-4 pt-1 pb-2 text-indigo-500 text-xs font-semibold uppercase tracking-widest">Main Menu</p>
+      <a routerLink="/user/dashboard" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-chart-pie w-4 text-center"></i><span>Dashboard</span></a>
+      <a routerLink="/user/workshop-events" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-calendar-days w-4 text-center"></i><span>Browse Events</span></a>
+      <a routerLink="/user/my-bookings" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-ticket w-4 text-center"></i><span>My Bookings</span></a>
+      <a routerLink="/user/feedback" routerLinkActive="active-nav"
+        class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-white transition-all duration-150 text-sm font-medium mb-0.5">
+        <i class="fas fa-star w-4 text-center"></i><span>Feedback</span></a>
     </ng-container>
+  </nav>
 
-    <li>
-      <a class="logout-btn" (click)="logout()">Logout</a>
-    </li>
-  </ul>
-</nav>
+  <!-- Sign out -->
+  <div class="px-3 py-4 border-t border-white/10">
+    <button (click)="logout()"
+      class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-indigo-300 hover:text-red-300 hover:bg-red-500/10 transition-all duration-150 text-sm font-medium">
+      <i class="fas fa-right-from-bracket w-4 text-center"></i>
+      <span>Sign Out</span>
+    </button>
+  </div>
+</aside>
