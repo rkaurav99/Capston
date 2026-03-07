@@ -4,6 +4,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { Login } from '../models/login.model';
+import { environment } from '../../environments/environment';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +26,19 @@ export class AuthService {
   /**
    * Register a new user.
    */
+  private encryptPassword(password: string): string {
+    const key = CryptoJS.enc.Utf8.parse(environment.encryptionKey);
+    const iv  = CryptoJS.enc.Utf8.parse(environment.encryptionIV);
+    return CryptoJS.AES.encrypt(password, key, {
+      iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    }).toString();
+  }
+
   register(user: User): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/register`, user, {
+    const payload = { ...user, Password: this.encryptPassword(user.Password) };
+    return this.http.post(`${this.apiUrl}/api/register`, payload, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
@@ -35,7 +48,8 @@ export class AuthService {
    * On success, stores JWT token in localStorage and updates role/userId BehaviorSubjects.
    */
   login(login: Login): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/login`, login, {
+    const payload = { ...login, Password: this.encryptPassword(login.Password) };
+    return this.http.post(`${this.apiUrl}/api/login`, payload, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }).pipe(
       tap((response: any) => {

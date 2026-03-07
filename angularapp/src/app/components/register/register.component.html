@@ -1,11 +1,14 @@
 <div class="auth-shell">
   <div class="auth-hero">
+    <div class="auth-grid"></div>
+    <div class="auth-noise"></div>
     <div class="auth-orb"></div>
     <div class="auth-orb orb-secondary"></div>
     <div class="auth-brand">
-      <div class="brand-mark"><i class="fas fa-calendar-star"></i></div>
+      <div class="brand-mark"><i class="fas fa-chalkboard-user"></i></div>
       <span>WorkshopHub</span>
     </div>
+    <span class="auth-chip">New creator lane</span>
     <h2>Launch your workshop journey</h2>
     <p>Create a free account to unlock curated events, bookings, and feedback insights.</p>
     <div class="auth-points">
@@ -13,91 +16,111 @@
       <div><i class="fas fa-check"></i> Personalized booking dashboard</div>
       <div><i class="fas fa-check"></i> Verified organizer network</div>
     </div>
+
+    <div class="auth-preview">
+      <div class="auth-preview-label">Account Benefits</div>
+      <div class="auth-preview-row">
+        <span class="auth-preview-dot"></span>
+        <span>Track registrations, feedback, and event status in one place</span>
+      </div>
+      <div class="auth-preview-row">
+        <span class="auth-preview-dot"></span>
+        <span>Create learner or admin access depending on your workflow</span>
+      </div>
+    </div>
   </div>
 
-  <div class="auth-card">
-    <div class="auth-title">
-      <h1>Registration</h1>
-      <p class="muted">Join the community in minutes</p>
-    </div>
-
-    <div *ngIf="errorMessage" class="auth-alert error">
-      <i class="fas fa-circle-exclamation"></i>
-      <span>{{errorMessage}}</span>
-    </div>
-    <div *ngIf="successMessage" class="auth-alert success">
-      <i class="fas fa-circle-check"></i>
-      <span>{{successMessage}}</span>
-    </div>
-
-    <form (ngSubmit)="onRegister()" #regForm="ngForm">
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-user"></i></span>
-        <input type="text" name="username" [(ngModel)]="user.Username" required placeholder=" ">
-        <label>Full name *</label>
+  <div class="auth-card-wrap">
+    <div class="auth-card">
+      <div class="auth-title">
+        <span class="auth-form-kicker">Registration</span>
+        <h1>Create your immersive WorkshopHub account</h1>
+        <p class="muted">Join the community in minutes</p>
       </div>
 
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-envelope"></i></span>
-        <input type="email" name="email" [(ngModel)]="user.Email" required placeholder=" ">
-        <label>Email address *</label>
+      <div *ngIf="errorMessage" class="auth-alert error">
+        <i class="fas fa-circle-exclamation"></i>
+        <span>{{errorMessage}}</span>
+      </div>
+      <div *ngIf="successMessage" class="auth-alert success">
+        <i class="fas fa-circle-check"></i>
+        <span>{{successMessage}}</span>
       </div>
 
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-lock"></i></span>
-        <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="user.Password" required placeholder=" ">
-        <label>Password *</label>
-        <button type="button" class="eye-btn" (click)="showPassword = !showPassword" tabindex="-1">
-          <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+      <form (ngSubmit)="onRegister()" #regForm="ngForm">
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-user"></i></span>
+          <input type="text" name="username" [(ngModel)]="user.Username" required placeholder=" ">
+          <label>Full name *</label>
+        </div>
+
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-envelope"></i></span>
+          <input type="email" name="email" [(ngModel)]="user.Email" required placeholder=" ">
+          <label>Email address *</label>
+        </div>
+
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-lock"></i></span>
+          <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="user.Password" required placeholder=" ">
+          <label>Password *</label>
+          <button type="button" class="eye-btn" (click)="showPassword = !showPassword" tabindex="-1">
+            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+          </button>
+        </div>
+
+        <div class="field" [class.field-error]="confirmPasswordError">
+          <span class="field-icon"><i class="fas fa-lock-keyhole"></i></span>
+          <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmPassword" [(ngModel)]="confirmPassword"
+                 required placeholder=" "
+                 (ngModelChange)="confirmPasswordError = ''">
+          <label>Confirm password *</label>
+          <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+            <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+          </button>
+        </div>
+        <div *ngIf="confirmPasswordError" class="field-hint error-hint">
+          <i class="fas fa-triangle-exclamation"></i> {{confirmPasswordError}}
+        </div>
+
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-phone"></i></span>
+          <input type="tel" name="mobileNumber" [(ngModel)]="user.MobileNumber" required placeholder=" ">
+          <label>Mobile number *</label>
+        </div>
+
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-shield"></i></span>
+          <select name="userRole" [(ngModel)]="user.UserRole" required>
+            <option value="" disabled selected></option>
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+          </select>
+          <label>Role *</label>
+        </div>
+
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-key"></i></span>
+          <input type="password" name="secretKey" [(ngModel)]="user.SecretKey" placeholder=" ">
+          <label>Secret key (Admin)</label>
+        </div>
+
+        <button type="submit" [disabled]="loading" class="btn-primary auth-submit">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+          <i *ngIf="!loading" class="fas fa-user-plus"></i>
+          {{ loading ? 'Creating account...' : 'Create Account' }}
         </button>
+      </form>
+
+      <div class="auth-footer">
+        <span class="muted">Already registered?</span>
+        <button (click)="goToLogin()" class="link-btn">Sign in</button>
       </div>
 
-      <div class="field" [class.field-error]="confirmPasswordError">
-        <span class="field-icon"><i class="fas fa-lock-keyhole"></i></span>
-        <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmPassword" [(ngModel)]="confirmPassword"
-               required placeholder=" "
-               (ngModelChange)="confirmPasswordError = ''">
-        <label>Confirm password *</label>
-        <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
-          <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
-        </button>
+      <div class="auth-meta-bar">
+        <span><i class="fas fa-user-shield"></i> Flexible roles</span>
+        <span><i class="fas fa-layer-group"></i> Unified workflow</span>
       </div>
-      <div *ngIf="confirmPasswordError" class="field-hint error-hint">
-        <i class="fas fa-triangle-exclamation"></i> {{confirmPasswordError}}
-      </div>
-
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-phone"></i></span>
-        <input type="tel" name="mobileNumber" [(ngModel)]="user.MobileNumber" required placeholder=" ">
-        <label>Mobile number *</label>
-      </div>
-
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-shield"></i></span>
-        <select name="userRole" [(ngModel)]="user.UserRole" required>
-          <option value="" disabled selected></option>
-          <option value="User">User</option>
-          <option value="Admin">Admin</option>
-        </select>
-        <label>Role *</label>
-      </div>
-
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-key"></i></span>
-        <input type="password" name="secretKey" [(ngModel)]="user.SecretKey" placeholder=" ">
-        <label>Secret key (Admin)</label>
-      </div>
-
-      <button type="submit" [disabled]="loading" class="btn-primary auth-submit">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
-        <i *ngIf="!loading" class="fas fa-user-plus"></i>
-        {{ loading ? 'Creating account...' : 'Create Account' }}
-      </button>
-    </form>
-
-    <div class="auth-footer">
-      <span class="muted">Already registered?</span>
-      <button (click)="goToLogin()" class="link-btn">Sign in</button>
     </div>
   </div>
 </div>

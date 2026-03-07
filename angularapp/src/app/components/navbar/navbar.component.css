@@ -38,14 +38,19 @@
 }
 
 .brand-title {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: var(--theme-text-strong);
   transition: opacity var(--transition-base), width var(--transition-base);
   white-space: nowrap;
   overflow: hidden;
+}
+
+.topbar-brand:hover .brand-mark,
+.topbar-brand:hover .brand-title {
+  opacity: 0.85;
 }
 
 .brand-sub {

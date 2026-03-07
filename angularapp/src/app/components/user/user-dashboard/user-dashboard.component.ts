@@ -24,14 +24,16 @@ export class UserDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let pending = 2;
+    const dec = () => { if (--pending === 0) this.loading = false; };
     const uid = this.authService.getUserId();
     this.bookingService.getBookingsByUserId(uid).subscribe(
-      (d: Booking[]) => { this.bookings = d; this.loading = false; },
-      () => { this.bookings = []; this.loading = false; }
+      (d: Booking[]) => { this.bookings = d; dec(); },
+      () => { this.bookings = []; dec(); }
     );
     this.workshopService.getAllWorkshopEvents().subscribe(
-      (d: WorkshopEvent[]) => { this.workshops = d; },
-      () => { this.workshops = []; }
+      (d: WorkshopEvent[]) => { this.workshops = d; dec(); },
+      () => { this.workshops = []; dec(); }
     );
   }
 
@@ -44,10 +46,10 @@ export class UserDashboardComponent implements OnInit {
 
   badgeClass(status: string): string {
     const m: {[k:string]:string} = {
-      'Approved':'bg-green-100 text-green-700','Submitted':'bg-indigo-100 text-indigo-700',
-      'Pending':'bg-yellow-100 text-yellow-700','Cancelled':'bg-red-100 text-red-700'
+      'Approved':'db-badge--green','Submitted':'db-badge--indigo',
+      'Pending':'db-badge--amber','Cancelled':'db-badge--red'
     };
-    return m[status] || 'bg-gray-100 text-gray-600';
+    return m[status] || 'db-badge--gray';
   }
 
   daysUntil(d: Date | string): number {

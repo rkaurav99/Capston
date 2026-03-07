@@ -1,11 +1,14 @@
 <div class="auth-shell">
   <div class="auth-hero">
+    <div class="auth-grid"></div>
+    <div class="auth-noise"></div>
     <div class="auth-orb"></div>
     <div class="auth-orb orb-secondary"></div>
     <div class="auth-brand">
-      <div class="brand-mark"><i class="fas fa-calendar-star"></i></div>
+      <div class="brand-mark"><i class="fas fa-chalkboard-user"></i></div>
       <span>WorkshopHub</span>
     </div>
+    <span class="auth-chip">Secure access lane</span>
     <h2>Welcome back to your learning stream</h2>
     <p>Access workshops, manage bookings, and stay on top of your professional growth.</p>
     <div class="auth-points">
@@ -13,42 +16,62 @@
       <div><i class="fas fa-check"></i> Smart booking history & status</div>
       <div><i class="fas fa-check"></i> Personalized feedback dashboard</div>
     </div>
+
+    <div class="auth-preview">
+      <div class="auth-preview-label">Live Workspace Signal</div>
+      <div class="auth-preview-row">
+        <span class="auth-preview-dot"></span>
+        <span>Bookings synced across learner and admin dashboards</span>
+      </div>
+      <div class="auth-preview-row">
+        <span class="auth-preview-dot"></span>
+        <span>Theme-aware experience with fast entry into your control panel</span>
+      </div>
+    </div>
   </div>
 
-  <div class="auth-card">
-    <div class="auth-title">
-      <h1>Sign in</h1>
-      <p class="muted">Use your credentials to continue</p>
-    </div>
-
-    <div *ngIf="errorMessage" class="auth-alert error">
-      <i class="fas fa-circle-exclamation"></i>
-      <span>{{errorMessage}}</span>
-    </div>
-
-    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-envelope"></i></span>
-        <input type="email" name="email" [(ngModel)]="login.Email" required placeholder=" ">
-        <label>Email address *</label>
+  <div class="auth-card-wrap">
+    <div class="auth-card">
+      <div class="auth-title">
+        <span class="auth-form-kicker">Sign in</span>
+        <h1>Reconnect with your workshop control room</h1>
+        <p class="muted">Use your credentials to continue</p>
       </div>
 
-      <div class="field">
-        <span class="field-icon"><i class="fas fa-lock"></i></span>
-        <input type="password" name="password" [(ngModel)]="login.Password" required placeholder=" ">
-        <label>Password *</label>
+      <div *ngIf="errorMessage" class="auth-alert error">
+        <i class="fas fa-circle-exclamation"></i>
+        <span>{{errorMessage}}</span>
       </div>
 
-      <button type="submit" [disabled]="loading" class="btn-primary auth-submit">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
-        <i *ngIf="!loading" class="fas fa-right-to-bracket"></i>
-        {{ loading ? 'Signing in...' : 'Sign In' }}
-      </button>
-    </form>
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-envelope"></i></span>
+          <input type="email" name="email" [(ngModel)]="login.Email" required placeholder=" ">
+          <label>Email address *</label>
+        </div>
 
-    <div class="auth-footer">
-      <span class="muted">Don't have an account?</span>
-      <button (click)="goToRegister()" class="link-btn">Create one</button>
+        <div class="field">
+          <span class="field-icon"><i class="fas fa-lock"></i></span>
+          <input type="password" name="password" [(ngModel)]="login.Password" required placeholder=" ">
+          <label>Password *</label>
+        </div>
+
+        <button type="submit" [disabled]="loading" class="btn-primary auth-submit">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+          <i *ngIf="!loading" class="fas fa-right-to-bracket"></i>
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span class="muted">Don't have an account?</span>
+        <button (click)="goToRegister()" class="link-btn">Create one</button>
+      </div>
+
+      <div class="auth-meta-bar">
+        <span><i class="fas fa-shield-check"></i> Verified access</span>
+        <span><i class="fas fa-bolt"></i> Fast sign-in</span>
+      </div>
     </div>
   </div>
 </div>

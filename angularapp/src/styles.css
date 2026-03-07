@@ -252,7 +252,8 @@ img {
   --theme-stat-gradient: linear-gradient(135deg, #000000, #0a0800, #151100);
   --theme-cta-gradient: linear-gradient(135deg, #0e0d00, #1a1800, #221f00);
   --theme-text-muted: rgba(250, 204, 21, 0.48);
-} {
+}
+body.theme-minimalist {
   --theme-bg: #f6f7fb;
   --theme-surface: #ffffff;
   --theme-surface-muted: #eef2f7;
@@ -285,7 +286,8 @@ img {
   --theme-stat-gradient: linear-gradient(135deg, #cbd5e1, #e2e8f0, #f8fafc);
   --theme-cta-gradient: linear-gradient(135deg, #ffffff, #e2e8f0, #cbd5e1);
   --theme-text-muted: rgba(71, 85, 105, 0.6);
-} {
+}
+body.theme-royal-blue {
   --theme-bg: #081122;
   --theme-surface: #0f172a;
   --theme-surface-muted: #172554;
@@ -318,7 +320,8 @@ img {
   --theme-stat-gradient: linear-gradient(135deg, #081122, #0f172a, #172554);
   --theme-cta-gradient: linear-gradient(135deg, #0f172a, #172554, #1d4ed8);
   --theme-text-muted: rgba(147, 197, 253, 0.55);
-} {
+}
+body.theme-tokyo {
   --theme-bg: #031018;
   --theme-surface: #071b24;
   --theme-surface-muted: #0f2f3a;
@@ -351,7 +354,7 @@ img {
   --theme-stat-gradient: linear-gradient(135deg, #031018, #071b24, #0f766e);
   --theme-cta-gradient: linear-gradient(135deg, #04131b, #0f2f3a, #0f766e);
   --theme-text-muted: rgba(153, 246, 228, 0.5);
-} */
+}
 .app-shell {
   min-height: 100vh;
   background: var(--theme-bg);

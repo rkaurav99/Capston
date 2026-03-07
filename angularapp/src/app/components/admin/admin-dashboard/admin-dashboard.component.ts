@@ -17,6 +17,7 @@ export class AdminDashboardComponent implements OnInit {
   bookings: Booking[] = [];
   feedbacks: Feedback[] = [];
   loading = true;
+  private pending = 3;
 
   constructor(
     private workshopService: WorkshopEventService,
@@ -26,12 +27,18 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.workshopService.getAllWorkshopEvents().subscribe(d => { this.workshops = d; this.checkDone(); }, () => this.checkDone());
-    this.bookingService.getAllBookings().subscribe(d => { this.bookings = d; this.checkDone(); }, () => this.checkDone());
-    this.feedbackService.getAllFeedbacks().subscribe(d => { this.feedbacks = d; this.checkDone(); }, () => this.checkDone());
+    this.workshopService.getAllWorkshopEvents().subscribe(
+      d => { this.workshops = d; this.dec(); }, () => this.dec()
+    );
+    this.bookingService.getAllBookings().subscribe(
+      d => { this.bookings = d; this.dec(); }, () => this.dec()
+    );
+    this.feedbackService.getAllFeedbacks().subscribe(
+      d => { this.feedbacks = d; this.dec(); }, () => this.dec()
+    );
   }
 
-  private checkDone(): void { this.loading = false; }
+  private dec(): void { if (--this.pending === 0) this.loading = false; }
 
   get totalWorkshops()    { return this.workshops.length; }
   get totalBookings()     { return this.bookings.length; }
@@ -54,10 +61,10 @@ export class AdminDashboardComponent implements OnInit {
 
   badgeClass(status: string): string {
     const m: {[k:string]:string} = {
-      'Approved':'bg-green-100 text-green-700','Submitted':'bg-indigo-100 text-indigo-700',
-      'Pending':'bg-yellow-100 text-yellow-700','Cancelled':'bg-red-100 text-red-700'
+      'Approved':'db-badge--green','Submitted':'db-badge--indigo',
+      'Pending':'db-badge--amber','Cancelled':'db-badge--red'
     };
-    return m[status] || 'bg-gray-100 text-gray-600';
+    return m[status] || 'db-badge--gray';
   }
 
   navTo(path: string): void { this.router.navigate([path]); }

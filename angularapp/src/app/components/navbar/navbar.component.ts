@@ -41,6 +41,10 @@ export class NavbarComponent implements OnInit {
     this.sidebarCollapsedChange.emit(this.sidebarCollapsed);
   }
 
+  goHome(): void {
+    this.router.navigate(['/home']);
+  }
+
   goDashboard(): void {
     const role = this.authService.getUserRole();
     this.router.navigate([role === 'Admin' ? '/admin/dashboard' : '/user/dashboard']);

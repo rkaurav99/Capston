@@ -1,262 +1,194 @@
-<!-- Header -->
-<div class="bg-white border-b border-gray-100 px-8 py-6">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-black text-gray-900" style="font-family:'Space Grotesk',sans-serif">Admin Dashboard</h1>
-      <p class="text-gray-400 text-sm mt-0.5">Overview of your platform performance</p>
-    </div>
-    <button (click)="navTo('/admin/add-workshop-event')"
-      class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm transition hover:opacity-90"
-      style="background:linear-gradient(135deg,#6366f1,#a855f7)">
-      <i class="fas fa-plus"></i> Add Workshop
-    </button>
-  </div>
-</div>
+<div class="db-shell">
+  <div class="db-grid" aria-hidden="true"></div>
+  <div class="db-noise" aria-hidden="true"></div>
 
-<div class="p-8">
-
-  <!-- Loading -->
-  <div *ngIf="loading" class="flex items-center justify-center py-20">
-    <div class="text-center">
-      <i class="fas fa-spinner fa-spin text-indigo-400 text-3xl mb-3"></i>
-      <p class="text-gray-400 text-sm">Loading dashboard data...</p>
+  <!-- Header -->
+  <div class="db-header">
+    <div class="db-header-inner">
+      <div>
+        <div class="db-kicker">Admin Panel</div>
+        <h1 class="db-title">Dashboard</h1>
+        <p class="db-subtitle">Platform performance overview</p>
+      </div>
+      <button (click)="navTo('/admin/add-workshop-event')" class="db-primary-btn">
+        <i class="fas fa-plus"></i> Add Workshop
+      </button>
     </div>
   </div>
 
-  <ng-container *ngIf="!loading">
+  <div class="db-body">
 
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition" (click)="navTo('/admin/workshop-events')">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#6366f1,#818cf8)">
-            <i class="fas fa-calendar-days text-white text-lg"></i>
-          </div>
-          <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">Events</span>
-        </div>
-        <p class="text-3xl font-black text-gray-900">{{totalWorkshops}}</p>
-        <p class="text-gray-500 text-sm mt-0.5">Total Workshops</p>
-        <p class="text-indigo-500 text-xs mt-2 font-medium hover:underline">Manage →</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition" (click)="navTo('/admin/bookings')">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#10b981,#34d399)">
-            <i class="fas fa-ticket text-white text-lg"></i>
-          </div>
-          <span class="text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">Bookings</span>
-        </div>
-        <p class="text-3xl font-black text-gray-900">{{totalBookings}}</p>
-        <p class="text-gray-500 text-sm mt-0.5">Total Bookings</p>
-        <p class="text-green-500 text-xs mt-2 font-medium hover:underline">Manage →</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition" (click)="navTo('/admin/feedbacks')">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)">
-            <i class="fas fa-comments text-white text-lg"></i>
-          </div>
-          <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">Reviews</span>
-        </div>
-        <p class="text-3xl font-black text-gray-900">{{totalFeedbacks}}</p>
-        <p class="text-gray-500 text-sm mt-0.5">Total Feedbacks</p>
-        <p class="text-purple-500 text-xs mt-2 font-medium hover:underline">View →</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)">
-            <i class="fas fa-clock text-white text-lg"></i>
-          </div>
-          <span class="text-xs font-semibold text-yellow-600 bg-yellow-50 px-2.5 py-1 rounded-full">Pending</span>
-        </div>
-        <p class="text-3xl font-black text-gray-900">{{pendingBookings}}</p>
-        <p class="text-gray-500 text-sm mt-0.5">Awaiting Approval</p>
-        <p class="text-yellow-500 text-xs mt-2 font-medium">Needs attention</p>
-      </div>
+    <!-- Loading -->
+    <div *ngIf="loading" class="db-loading">
+      <div class="db-spinner"></div>
+      <p class="db-loading-label">Loading dashboard&hellip;</p>
     </div>
 
-    <!-- Booking status breakdown + Category breakdown -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <ng-container *ngIf="!loading">
 
-      <!-- Booking status -->
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
-          <i class="fas fa-chart-donut text-indigo-500"></i> Booking Status
-        </h2>
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-              <span class="text-sm text-gray-600">Approved</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full bg-green-400 rounded-full" [style.width.%]="totalBookings ? (approvedBookings/totalBookings)*100 : 0"></div>
-              </div>
-              <span class="text-sm font-bold text-gray-900 w-6 text-right">{{approvedBookings}}</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-indigo-400"></div>
-              <span class="text-sm text-gray-600">Submitted</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full bg-indigo-400 rounded-full" [style.width.%]="totalBookings ? (pendingBookings/totalBookings)*100 : 0"></div>
-              </div>
-              <span class="text-sm font-bold text-gray-900 w-6 text-right">{{pendingBookings}}</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-              <span class="text-sm text-gray-600">Cancelled</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full bg-red-400 rounded-full" [style.width.%]="totalBookings ? (cancelledBookings/totalBookings)*100 : 0"></div>
-              </div>
-              <span class="text-sm font-bold text-gray-900 w-6 text-right">{{cancelledBookings}}</span>
-            </div>
-          </div>
+      <!-- KPI Cards -->
+      <div class="db-kpi-grid">
+        <div class="db-kpi-card" (click)="navTo('/admin/workshop-events')">
+          <div class="db-kpi-icon db-kpi-icon--indigo"><i class="fas fa-calendar-days"></i></div>
+          <p class="db-kpi-value">{{totalWorkshops}}</p>
+          <p class="db-kpi-label">Total Workshops</p>
+          <div class="db-kpi-bar db-kpi-bar--indigo"></div>
+          <p class="db-kpi-link">Manage &rarr;</p>
         </div>
 
-        <!-- Quick action row -->
-        <div class="mt-6 pt-5 border-t border-gray-50 grid grid-cols-2 gap-2">
-          <button (click)="navTo('/admin/feedbacks')"
-            class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-purple-50 text-purple-600 text-xs font-semibold hover:bg-purple-100 transition">
-            <i class="fas fa-message-exclamation text-xs"></i>
-            {{pendingFeedbacks}} Unread
-          </button>
-          <button (click)="navTo('/admin/bookings')"
-            class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-yellow-50 text-yellow-600 text-xs font-semibold hover:bg-yellow-100 transition">
-            <i class="fas fa-clock text-xs"></i>
-            {{pendingBookings}} Pending
-          </button>
+        <div class="db-kpi-card" (click)="navTo('/admin/bookings')">
+          <div class="db-kpi-icon db-kpi-icon--green"><i class="fas fa-ticket"></i></div>
+          <p class="db-kpi-value">{{totalBookings}}</p>
+          <p class="db-kpi-label">Total Bookings</p>
+          <div class="db-kpi-bar db-kpi-bar--green"></div>
+          <p class="db-kpi-link">Manage &rarr;</p>
+        </div>
+
+        <div class="db-kpi-card" (click)="navTo('/admin/feedbacks')">
+          <div class="db-kpi-icon db-kpi-icon--purple"><i class="fas fa-comments"></i></div>
+          <p class="db-kpi-value">{{totalFeedbacks}}</p>
+          <p class="db-kpi-label">Total Feedbacks</p>
+          <div class="db-kpi-bar db-kpi-bar--purple"></div>
+          <p class="db-kpi-link">View &rarr;</p>
+        </div>
+
+        <div class="db-kpi-card">
+          <div class="db-kpi-icon db-kpi-icon--amber"><i class="fas fa-clock"></i></div>
+          <p class="db-kpi-value">{{pendingBookings}}</p>
+          <p class="db-kpi-label">Awaiting Approval</p>
+          <div class="db-kpi-bar db-kpi-bar--amber"></div>
+          <p class="db-kpi-link db-kpi-link--amber">Needs attention</p>
         </div>
       </div>
 
-      <!-- Workshop categories -->
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
-          <i class="fas fa-tags text-indigo-500"></i> Top Categories
-        </h2>
-        <div *ngIf="categoryStats.length === 0" class="py-6 text-center text-gray-300 text-sm">No data yet</div>
-        <div class="space-y-3">
-          <div *ngFor="let cat of categoryStats; let i = index" class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-5 h-5 rounded-md text-xs font-bold flex items-center justify-center text-white"
-                [style.background]="['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6'][i] || '#6366f1'">
+      <!-- Middle 3-col -->
+      <div class="db-mid-grid">
+
+        <!-- Booking Status -->
+        <div class="db-panel">
+          <div class="db-panel-head"><i class="fas fa-chart-donut"></i> Booking Status</div>
+          <div class="db-status-list">
+            <div class="db-status-row">
+              <div class="db-status-dot db-status-dot--green"></div>
+              <span class="db-status-label">Approved</span>
+              <div class="db-bar-track">
+                <div class="db-bar-fill db-bar-fill--green" [style.width.%]="totalBookings ? (approvedBookings/totalBookings)*100 : 0"></div>
+              </div>
+              <span class="db-status-count">{{approvedBookings}}</span>
+            </div>
+            <div class="db-status-row">
+              <div class="db-status-dot db-status-dot--indigo"></div>
+              <span class="db-status-label">Submitted</span>
+              <div class="db-bar-track">
+                <div class="db-bar-fill db-bar-fill--indigo" [style.width.%]="totalBookings ? (pendingBookings/totalBookings)*100 : 0"></div>
+              </div>
+              <span class="db-status-count">{{pendingBookings}}</span>
+            </div>
+            <div class="db-status-row">
+              <div class="db-status-dot db-status-dot--red"></div>
+              <span class="db-status-label">Cancelled</span>
+              <div class="db-bar-track">
+                <div class="db-bar-fill db-bar-fill--red" [style.width.%]="totalBookings ? (cancelledBookings/totalBookings)*100 : 0"></div>
+              </div>
+              <span class="db-status-count">{{cancelledBookings}}</span>
+            </div>
+          </div>
+          <div class="db-panel-footer">
+            <button (click)="navTo('/admin/feedbacks')" class="db-action-chip db-action-chip--purple">
+              <i class="fas fa-message-exclamation"></i> {{pendingFeedbacks}} Unread
+            </button>
+            <button (click)="navTo('/admin/bookings')" class="db-action-chip db-action-chip--amber">
+              <i class="fas fa-clock"></i> {{pendingBookings}} Pending
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Categories -->
+        <div class="db-panel">
+          <div class="db-panel-head"><i class="fas fa-tags"></i> Top Categories</div>
+          <div *ngIf="categoryStats.length === 0" class="db-empty-state">No data yet</div>
+          <div class="db-cat-list">
+            <div *ngFor="let cat of categoryStats; let i = index" class="db-cat-row">
+              <span class="db-cat-rank"
+                [style.background]="['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6'][i]||'#6366f1'">
                 {{i+1}}
               </span>
-              <span class="text-sm text-gray-700 font-medium">{{cat.name}}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full rounded-full"
-                  [style.background]="['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6'][i] || '#6366f1'"
+              <span class="db-cat-name">{{cat.name}}</span>
+              <div class="db-bar-track db-bar-track--sm">
+                <div class="db-bar-fill"
+                  [style.background]="['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6'][i]||'#6366f1'"
                   [style.width.%]="totalWorkshops ? (cat.count/totalWorkshops)*100 : 0"></div>
               </div>
-              <span class="text-xs font-bold text-gray-600 w-4 text-right">{{cat.count}}</span>
+              <span class="db-cat-count">{{cat.count}}</span>
             </div>
           </div>
         </div>
+
+        <!-- Quick Actions -->
+        <div class="db-panel">
+          <div class="db-panel-head"><i class="fas fa-bolt"></i> Quick Actions</div>
+          <div class="db-qa-list">
+            <button (click)="navTo('/admin/add-workshop-event')" class="db-qa-item">
+              <div class="db-qa-icon db-qa-icon--indigo"><i class="fas fa-plus"></i></div>
+              <div><p class="db-qa-title">Add Workshop</p><p class="db-qa-desc">Create a new event</p></div>
+            </button>
+            <button (click)="navTo('/admin/bookings')" class="db-qa-item">
+              <div class="db-qa-icon db-qa-icon--green"><i class="fas fa-check"></i></div>
+              <div><p class="db-qa-title">Review Bookings</p><p class="db-qa-desc">Approve or reject</p></div>
+            </button>
+            <button (click)="navTo('/admin/feedbacks')" class="db-qa-item">
+              <div class="db-qa-icon db-qa-icon--purple"><i class="fas fa-reply"></i></div>
+              <div><p class="db-qa-title">Respond to Feedback</p><p class="db-qa-desc">{{pendingFeedbacks}} awaiting</p></div>
+            </button>
+            <button (click)="navTo('/admin/workshop-events')" class="db-qa-item">
+              <div class="db-qa-icon db-qa-icon--amber"><i class="fas fa-list"></i></div>
+              <div><p class="db-qa-title">Manage Events</p><p class="db-qa-desc">Edit or delete events</p></div>
+            </button>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Quick actions -->
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
-          <i class="fas fa-bolt text-indigo-500"></i> Quick Actions
-        </h2>
-        <div class="space-y-2">
-          <button (click)="navTo('/admin/add-workshop-event')"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition text-left">
-            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-plus text-white text-sm"></i>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-gray-900">Add Workshop</p>
-              <p class="text-xs text-gray-400">Create a new event</p>
-            </div>
-          </button>
-          <button (click)="navTo('/admin/bookings')"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-green-50 hover:bg-green-100 transition text-left">
-            <div class="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-check text-white text-sm"></i>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-gray-900">Review Bookings</p>
-              <p class="text-xs text-gray-400">Approve or reject</p>
-            </div>
-          </button>
-          <button (click)="navTo('/admin/feedbacks')"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-50 hover:bg-purple-100 transition text-left">
-            <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-reply text-white text-sm"></i>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-gray-900">Respond to Feedback</p>
-              <p class="text-xs text-gray-400">{{pendingFeedbacks}} awaiting response</p>
-            </div>
-          </button>
-          <button (click)="navTo('/admin/workshop-events')"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-yellow-50 hover:bg-yellow-100 transition text-left">
-            <div class="w-8 h-8 rounded-lg bg-yellow-500 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-list text-white text-sm"></i>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-gray-900">Manage Events</p>
-              <p class="text-xs text-gray-400">Edit or delete events</p>
-            </div>
-          </button>
+      <!-- Recent Bookings Table -->
+      <div class="db-panel db-panel--full">
+        <div class="db-panel-head db-panel-head--row">
+          <span><i class="fas fa-clock-rotate-left"></i> Recent Bookings</span>
+          <button (click)="navTo('/admin/bookings')" class="db-view-all">View all</button>
+        </div>
+        <div *ngIf="recentBookings.length === 0" class="db-empty-state">No bookings yet</div>
+        <div class="db-table-wrap" *ngIf="recentBookings.length > 0">
+          <table class="db-table">
+            <thead>
+              <tr class="db-thead-row">
+                <th class="db-th">ID</th>
+                <th class="db-th">User</th>
+                <th class="db-th">Event</th>
+                <th class="db-th">Date</th>
+                <th class="db-th">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of recentBookings" class="db-tr">
+                <td class="db-td"><span class="db-mono">#{{b.BookingId}}</span></td>
+                <td class="db-td">
+                  <div class="db-user-cell">
+                    <div class="db-user-avatar">U</div>
+                    <span>User #{{b.UserId}}</span>
+                  </div>
+                </td>
+                <td class="db-td db-muted">Event #{{b.WorkshopEventId}}</td>
+                <td class="db-td db-muted db-small">{{b.BookingDate | date:'MMM d, y'}}</td>
+                <td class="db-td">
+                  <span class="db-badge" [ngClass]="badgeClass(b.BookingStatus)">
+                    <i class="fas fa-circle db-badge-dot"></i>{{b.BookingStatus}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
 
-    <!-- Recent Bookings Table -->
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
-      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-50">
-        <h2 class="font-bold text-gray-900 flex items-center gap-2">
-          <i class="fas fa-clock-rotate-left text-indigo-500"></i> Recent Bookings
-        </h2>
-        <button (click)="navTo('/admin/bookings')" class="text-indigo-600 text-sm font-semibold hover:text-indigo-800 transition">View all</button>
-      </div>
-      <div *ngIf="recentBookings.length === 0" class="py-10 text-center text-gray-400 text-sm">No bookings yet</div>
-      <div class="overflow-x-auto">
-        <table *ngIf="recentBookings.length > 0" class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-gray-50">
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">ID</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">User</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Event</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50">
-            <tr *ngFor="let b of recentBookings" class="hover:bg-gray-50 transition">
-              <td class="px-6 py-3.5"><span class="font-mono text-gray-600 font-semibold">#{{b.BookingId}}</span></td>
-              <td class="px-6 py-3.5">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">U</div>
-                  <span class="text-gray-700 font-medium">User #{{b.UserId}}</span>
-                </div>
-              </td>
-              <td class="px-6 py-3.5 text-gray-600">Event #{{b.WorkshopEventId}}</td>
-              <td class="px-6 py-3.5 text-gray-400 text-xs">{{b.BookingDate | date:'MMM d, y'}}</td>
-              <td class="px-6 py-3.5">
-                <span class="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
-                  [ngClass]="badgeClass(b.BookingStatus)">
-                  <i class="fas fa-circle text-[5px]"></i>{{b.BookingStatus}}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </ng-container>
+    </ng-container>
+  </div>
 </div>

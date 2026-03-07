@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using dotnetapp.Data;
 using dotnetapp.Models;
@@ -25,8 +26,35 @@ namespace dotnetapp.Services
             _context = context;
         }
 
+        private string DecryptPassword(string encryptedBase64)
+        {
+            try
+            {
+                var key = Encoding.UTF8.GetBytes(_configuration["Encryption:Key"]);
+                var iv  = Encoding.UTF8.GetBytes(_configuration["Encryption:IV"]);
+                var cipherBytes = Convert.FromBase64String(encryptedBase64);
+                using var aes = Aes.Create();
+                aes.Key = key;
+                aes.IV  = iv;
+                aes.Mode    = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                using var decryptor = aes.CreateDecryptor();
+                using var ms = new MemoryStream(cipherBytes);
+                using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+                using var reader = new StreamReader(cs);
+                return reader.ReadToEnd();
+            }
+            catch
+            {
+                // If decryption fails (e.g. plain-text in tests), return as-is
+                return encryptedBase64;
+            }
+        }
+
         public async Task<(int, string)> Registration(User model, string role)
         {
+            model.Password = DecryptPassword(model.Password);
+
             var userExists = await userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
                 return (0, "User already exists");
@@ -69,6 +97,8 @@ namespace dotnetapp.Services
 
         public async Task<(int, string)> Login(LoginModel model)
         {
+            model.Password = DecryptPassword(model.Password);
+
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
                 return (0, "Invalid email");

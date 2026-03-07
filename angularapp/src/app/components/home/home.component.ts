@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('heroSection') heroSectionRef?: ElementRef<HTMLElement>;
   @ViewChild('heroVisuals') heroVisualsRef?: ElementRef<HTMLDivElement>;
   @ViewChild('heroRing') heroRingRef?: ElementRef<HTMLDivElement>;
   @ViewChild('heroGlow') heroGlowRef?: ElementRef<HTMLDivElement>;
@@ -76,6 +77,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.updateHeroPointer(72, 28);
     this.applyHeroTransforms();
   }
 
@@ -124,17 +126,32 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const rect = element.getBoundingClientRect();
     const normalizedX = ((event.clientX - rect.left) / rect.width) - 0.5;
     const normalizedY = ((event.clientY - rect.top) / rect.height) - 0.5;
+    const pointerX = ((event.clientX - rect.left) / rect.width) * 100;
+    const pointerY = ((event.clientY - rect.top) / rect.height) * 100;
     const motion = window.innerWidth < 1024 ? 22 : 36;
 
+    this.updateHeroPointer(pointerX, pointerY);
     this.targetOffsetX = normalizedX * motion;
     this.targetOffsetY = normalizedY * motion;
     this.startHeroAnimation();
   }
 
   onHeroPointerLeave(): void {
+    this.updateHeroPointer(72, 28);
     this.targetOffsetX = 0;
     this.targetOffsetY = 0;
     this.startHeroAnimation();
+  }
+
+  private updateHeroPointer(pointerX: number, pointerY: number): void {
+    const hero = this.heroSectionRef?.nativeElement;
+
+    if (!hero) {
+      return;
+    }
+
+    hero.style.setProperty('--pointer-x', `${pointerX}%`);
+    hero.style.setProperty('--pointer-y', `${pointerY}%`);
   }
 
   private startHeroAnimation(): void {

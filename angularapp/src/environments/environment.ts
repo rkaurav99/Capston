@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  encryptionKey: 'WorkshopHub!Key@2026#Secure$IV!!',
+  encryptionIV:  'WorkshopHub@IV16'
 };
 
 /*
