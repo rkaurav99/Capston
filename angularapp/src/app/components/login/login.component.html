@@ -52,8 +52,11 @@
 
         <div class="field">
           <span class="field-icon"><i class="fas fa-lock"></i></span>
-          <input type="password" name="password" [(ngModel)]="login.Password" required placeholder=" ">
+          <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="login.Password" required placeholder=" ">
           <label>Password *</label>
+          <button type="button" class="eye-btn" (click)="showPassword = !showPassword" tabindex="-1" aria-label="Toggle password visibility">
+            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+          </button>
         </div>
 
         <button type="submit" [disabled]="loading" class="btn-primary auth-submit">

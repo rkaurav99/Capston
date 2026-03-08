@@ -1,433 +1,151 @@
-<div class="home-page min-h-screen">
+<div class="home-page">
+  <section class="home-hero" #heroSection (mousemove)="onHeroPointerMove($event)" (mouseleave)="onHeroPointerLeave()">
+    <div class="home-hero-glow" #heroGlow></div>
+    <div class="home-hero-orb home-hero-orb-a" #heroVisuals></div>
+    <div class="home-hero-orb home-hero-orb-b" #heroRing></div>
 
-  <!-- ===== HERO ===== -->
-  <section class="cf-hero" #heroSection (mousemove)="onHeroPointerMove($event)" (mouseleave)="onHeroPointerLeave()">
-
-    <!-- Background visuals layer -->
-    <div class="cf-visuals" #heroVisuals aria-hidden="true">
-      <div class="cf-grid"></div>
-      <div class="cf-noise"></div>
-      <div class="cf-spotlight"></div>
-      <div class="cf-orbit cf-orbit-one"></div>
-      <div class="cf-orbit cf-orbit-two"></div>
-      <div class="cf-orbit cf-orbit-three"></div>
-
-      <div class="cf-arc-wrap" #heroRing>
-        <svg class="cf-arc-svg" viewBox="0 0 1440 920" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1294 132C1110 36 888 7 690 68C470 136 316 310 240 530" class="cf-orbit-trace cf-orbit-trace-strong"/>
-          <path d="M1210 220C1070 142 906 116 746 156C562 202 415 336 342 508" class="cf-orbit-trace"/>
-          <path d="M1122 760C1266 642 1350 494 1356 298" class="cf-orbit-trace cf-orbit-trace-soft"/>
-
-          <g class="cf-w-seg">
-            <line x1="12" y1="12" x2="390" y2="908" class="cf-w-hit"/>
-            <line x1="12" y1="12" x2="390" y2="908" class="cf-w-line"/>
-            <circle cx="12" cy="12" r="6" class="cf-w-node"/>
-            <circle cx="390" cy="908" r="5" class="cf-w-node cf-w-node-dim"/>
-          </g>
-
-          <g class="cf-w-seg">
-            <line x1="390" y1="908" x2="720" y2="168" class="cf-w-hit"/>
-            <line x1="390" y1="908" x2="720" y2="168" class="cf-w-line"/>
-            <circle cx="720" cy="168" r="6" class="cf-w-node"/>
-          </g>
-
-          <g class="cf-w-seg">
-            <line x1="720" y1="168" x2="1050" y2="908" class="cf-w-hit"/>
-            <line x1="720" y1="168" x2="1050" y2="908" class="cf-w-line"/>
-            <circle cx="1050" cy="908" r="5" class="cf-w-node cf-w-node-dim"/>
-          </g>
-
-          <g class="cf-w-seg">
-            <line x1="1050" y1="908" x2="1428" y2="12" class="cf-w-hit"/>
-            <line x1="1050" y1="908" x2="1428" y2="12" class="cf-w-line"/>
-            <circle cx="1428" cy="12" r="6" class="cf-w-node"/>
-          </g>
-        </svg>
-      </div>
-
-      <div class="cf-glow-disc" #heroGlow></div>
-
-      <div class="cf-corner-accent">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="200" cy="200" r="130" stroke="var(--theme-hero-arc)" stroke-width="0.8" stroke-opacity="0.20"/>
-          <circle cx="200" cy="200" r="80" stroke="var(--theme-hero-arc)" stroke-width="0.5" stroke-opacity="0.10"/>
-        </svg>
-      </div>
-    </div>
-
-    <div class="cf-shell">
-      <div class="cf-body">
-        <div class="cf-kicker">
-          <span class="cf-kicker-pill">Immersive Workshop Network</span>
-          <span class="cf-kicker-copy">Live discovery, instant booking, smart motion.</span>
-        </div>
-
-        <h1 class="cf-title">
-          {{ isLoggedIn() ? 'Step back into your learning cockpit.' : 'Workshops, staged like a live experience.' }}
-        </h1>
-
-        <p class="cf-lead">
-          {{ isLoggedIn() ? 'Your dashboard, bookings, and next sessions are already in sync. Dive back in with one click.' : 'Explore events through an interface that feels alive: rich depth, glowing motion, and a faster path from curiosity to reservation.' }}
+    <div class="home-shell">
+      <div class="home-hero-main panel">
+        <span class="home-chip">Workshop Event Management</span>
+        <h1>{{ isLoggedIn() ? 'Welcome back to your workshop space.' : 'Premium workshop discovery and booking.' }}</h1>
+        <p>
+          {{ isLoggedIn() ? 'Your dashboards, bookings, and favorites are ready. Continue where you left off.' : 'Explore curated sessions with a clean, calm interface designed for fast discovery and smooth booking.' }}
         </p>
 
-        <div class="cf-subtitle-pill">
-          <i class="fas fa-sparkles"></i>
-          <span>{{ isLoggedIn() ? 'Your next workshop lane is active. Continue from the dashboard or jump into new discoveries.' : 'Search by category, skill, or organizer and move from browsing to booking without friction.' }}</span>
+        <div class="home-search panel">
+          <i class="fas fa-magnifying-glass"></i>
+          <input
+            type="text"
+            class="input"
+            [(ngModel)]="searchText"
+            placeholder="Search by category, organizer, location..."
+            (keyup.enter)="handleHeroSearch()"
+          >
+          <button type="button" class="btn-primary" (click)="handleHeroSearch()">Search</button>
         </div>
 
-        <div class="cf-input-card">
-          <div class="cf-input-inner">
-            <input
-              type="text"
-              class="cf-search"
-              [(ngModel)]="searchText"
-              placeholder="Search workshops, speakers, locations, skills..."
-              (keyup.enter)="handleHeroSearch()"
-            >
-            <div class="cf-input-actions">
-              <button class="cf-go-btn" (click)="handleHeroSearch()" aria-label="Search">
-                <i class="fas fa-arrow-up"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="cf-action-row">
-          <button type="button" class="cf-primary-btn" (click)="handleHeroPrimaryAction()">
+        <div class="home-actions">
+          <button type="button" class="btn-primary" (click)="handleHeroPrimaryAction()">
             <i class="fas" [ngClass]="isLoggedIn() ? 'fa-gauge-high' : 'fa-user-plus'"></i>
-            <span>{{ isLoggedIn() ? 'Open Dashboard' : 'Create Free Account' }}</span>
+            {{ isLoggedIn() ? 'Open Dashboard' : 'Create Account' }}
           </button>
-          <button type="button" class="cf-secondary-btn" (click)="handleHeroSecondaryAction()">
+          <button type="button" class="btn-ghost" (click)="handleHeroSecondaryAction()">
             <i class="fas" [ngClass]="isLoggedIn() ? 'fa-compass' : 'fa-right-to-bracket'"></i>
-            <span>{{ isLoggedIn() ? 'Explore Events' : 'Sign In' }}</span>
+            {{ isLoggedIn() ? 'Explore Events' : 'Sign In' }}
           </button>
         </div>
 
-        <p class="cf-fine-print">
-          <span class="cf-fine-stat">500+ curated workshops</span>
-          <span class="cf-fine-sep">·</span>
-          <span class="cf-fine-stat">12K+ active learners</span>
-          <span class="cf-fine-sep">·</span>
-          <a class="cf-fine-link" (click)="isLoggedIn() ? goDashboard() : goLogin()">
-            {{ isLoggedIn() ? 'Jump to your control panel' : 'Sign in to continue' }}
-          </a>
-        </p>
-
-        <div class="cf-chips">
-          <button *ngFor="let cat of categories.slice(0, 4)" type="button" class="cf-chip" (click)="handleHeroSearch()">
-            <i [class]="cat.icon"></i>
-            <span>{{ cat.name }}</span>
+        <div class="home-quick-chips">
+          <button *ngFor="let cat of categories.slice(0, 6)" type="button" class="btn-ghost" (click)="handleHeroSearch()">
+            <i [class]="cat.icon"></i>{{ cat.name }}
           </button>
         </div>
       </div>
 
-      <div class="cf-hero-stack">
-        <div class="cf-panel cf-panel-main">
-          <div class="cf-panel-header">
-            <span class="cf-panel-label">Live Signals</span>
-            <span class="cf-panel-status"><i class="fas fa-circle"></i> Active</span>
-          </div>
-          <div class="cf-panel-stats">
-            <div *ngFor="let stat of stats.slice(0, 3)" class="cf-stat-card">
-              <div class="cf-stat-icon"><i [class]="stat.icon"></i></div>
-              <div>
-                <p class="cf-stat-value">{{ stat.value }}</p>
-                <p class="cf-stat-label">{{ stat.label }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cf-panel cf-panel-float">
-          <div class="cf-floating-copy">
-            <span class="cf-floating-eyebrow">Now Trending</span>
-            <h3>High-demand tracks are glowing in real time.</h3>
-          </div>
-          <div class="cf-mini-tags">
-            <span *ngFor="let cat of categories.slice(0, 3)">{{ cat.name }}</span>
-          </div>
-        </div>
-
-        <div class="cf-panel cf-panel-inline">
-          <div class="cf-inline-line">
-            <span class="cf-inline-dot"></span>
-            <span>Fast reservations</span>
-          </div>
-          <div class="cf-inline-line">
-            <span class="cf-inline-dot"></span>
-            <span>Theme-reactive experience</span>
-          </div>
-          <div class="cf-inline-line">
-            <span class="cf-inline-dot"></span>
-            <span>Admin and learner control paths</span>
+      <div class="home-hero-side panel">
+        <h3>Platform Highlights</h3>
+        <div class="home-side-stat" *ngFor="let stat of stats">
+          <span class="home-side-icon"><i [class]="stat.icon"></i></span>
+          <div>
+            <p class="home-side-value">{{ stat.value }}</p>
+            <p class="muted">{{ stat.label }}</p>
           </div>
         </div>
       </div>
     </div>
-
   </section>
 
-  <!-- ===== CATEGORIES ===== -->
-  <section class="cf-section cf-section-alt py-20 px-4">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-12">
-        <span class="cf-section-kicker">Explore By Category</span>
-        <h2 class="cf-section-title mt-2">Find Your Niche</h2>
-        <p class="cf-section-copy mt-3 max-w-xl mx-auto">From cutting-edge tech to creative arts, we have workshops that match every passion and career goal.</p>
+  <section class="home-section">
+    <div class="home-section-head">
+      <div>
+        <span class="home-chip">Featured Workshops</span>
+        <h2>Upcoming highlights</h2>
       </div>
+      <button class="btn-ghost" (click)="isLoggedIn() ? goDashboard() : goLogin()">View All</button>
+    </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-        <button *ngFor="let cat of categories" (click)="goLogin()"
-          class="card-hover cf-surface-card cf-category-card flex flex-col items-center gap-3 p-5 rounded-2xl cursor-pointer">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-               [style.background]="cat.bg" [style.color]="cat.color">
-            <i [class]="cat.icon + ' text-xl'"></i>
+    <div *ngIf="featuredEvents.length > 0" class="home-event-grid">
+      <article class="card home-event-card" *ngFor="let ev of featuredEvents">
+        <div class="home-event-top">
+          <span class="badge"><i class="fas fa-tag"></i>{{ev.Category}}</span>
+          <span class="muted">{{daysUntil(ev.StartDateTime)}} days</span>
+        </div>
+        <h3>{{ev.EventName}}</h3>
+        <p class="muted">{{ev.OrganizerName}}</p>
+        <p class="home-event-copy">{{ev.Description}}</p>
+        <div class="home-event-meta">
+          <span><i class="fas fa-location-dot"></i>{{ev.Location}}</span>
+          <span><i class="fas fa-users"></i>{{ev.Capacity}} seats</span>
+        </div>
+        <button class="btn-primary" (click)="isLoggedIn() ? goDashboard() : goLogin()">Book Now</button>
+      </article>
+    </div>
+
+    <div *ngIf="featuredEvents.length === 0" class="panel empty-state">
+      <div class="empty-icon"><i class="fas fa-calendar-days"></i></div>
+      <p class="muted">Featured workshops will appear here shortly.</p>
+    </div>
+  </section>
+
+  <section class="home-section home-section-muted">
+    <div class="home-section-head centered">
+      <span class="home-chip">Categories</span>
+      <h2>Discover your niche</h2>
+    </div>
+    <div class="home-category-grid">
+      <button *ngFor="let cat of categories" class="card home-category" (click)="goLogin()">
+        <span class="home-category-icon" [style.background]="cat.bg" [style.color]="cat.color"><i [class]="cat.icon"></i></span>
+        <span>{{cat.name}}</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-section-head centered">
+      <span class="home-chip">Testimonials</span>
+      <h2>Trusted by learners and organizers</h2>
+    </div>
+    <div class="home-testimonial-grid">
+      <article class="panel home-testimonial" *ngFor="let t of testimonials">
+        <div class="home-stars">
+          <i *ngFor="let s of stars(t.rating)" class="fas fa-star"></i>
+        </div>
+        <p>"{{t.text}}"</p>
+        <div class="home-person">
+          <span class="home-avatar">{{t.avatar}}</span>
+          <div>
+            <strong>{{t.name}}</strong>
+            <span class="muted">{{t.role}}</span>
           </div>
-          <span class="cf-category-name text-xs font-semibold text-center">{{cat.name}}</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section home-section-muted">
+    <div class="home-section-head centered">
+      <span class="home-chip">Frequently Asked</span>
+      <h2>Answers to common questions</h2>
+    </div>
+    <div class="home-faq-list">
+      <div class="panel home-faq-item" *ngFor="let faq of faqs; let i = index" [class.home-faq-open]="openFaq === i">
+        <button type="button" class="home-faq-trigger" (click)="toggleFaq(i)">
+          <span>{{faq.q}}</span>
+          <i class="fas" [ngClass]="openFaq === i ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         </button>
+        <p *ngIf="openFaq === i" class="muted">{{faq.a}}</p>
       </div>
     </div>
   </section>
 
-  <!-- ===== FEATURED EVENTS ===== -->
-  <section class="cf-section py-20 px-4">
-    <div class="max-w-7xl mx-auto">
-      <div class="cf-section-head flex items-end justify-between mb-12">
-        <div>
-          <span class="cf-section-kicker">Don't Miss Out</span>
-          <h2 class="cf-section-title mt-2">Featured Workshops</h2>
-        </div>
-        <button (click)="goLogin()" class="cf-link-btn hidden sm:flex items-center gap-2 text-sm transition">
-          View All <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-
-      <!-- Dynamic events from API -->
-      <div *ngIf="featuredEvents.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let ev of featuredEvents" class="card-hover cf-surface-card cf-event-card rounded-2xl overflow-hidden">
-          <div class="cf-card-glow-line h-3 w-full"></div>
-          <div class="p-6">
-            <div class="flex items-start justify-between mb-3">
-              <span class="cf-tag inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full">
-                <i class="fas fa-tag text-xs"></i> {{ev.Category}}
-              </span>
-              <span class="cf-meta text-xs font-medium">{{daysUntil(ev.StartDateTime)}}d left</span>
-            </div>
-            <h3 class="cf-card-title text-lg mb-1 leading-snug">{{ev.EventName}}</h3>
-            <p class="cf-card-meta text-sm mb-4 flex items-center gap-1.5">
-              <i class="fas fa-user text-xs"></i> {{ev.OrganizerName}}
-            </p>
-            <p class="cf-card-copy text-sm mb-5 line-clamp-2 leading-relaxed">{{ev.Description}}</p>
-            <div class="cf-meta-row flex items-center justify-between">
-              <div class="flex items-center gap-1 text-xs">
-                <i class="fas fa-location-dot"></i>
-                <span class="truncate max-w-[110px]">{{ev.Location}}</span>
-              </div>
-              <div class="flex items-center gap-1 text-xs">
-                <i class="fas fa-users"></i>
-                <span>{{ev.Capacity}} seats</span>
-              </div>
-            </div>
-            <button (click)="goLogin()"
-              class="cf-solid-btn mt-5 w-full py-2.5 rounded-xl text-sm font-semibold transition-all">
-              Book Now <i class="fas fa-arrow-right ml-1"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Placeholder cards when no data -->
-      <div *ngIf="featuredEvents.length === 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let i of [1,2,3,4,5,6]" class="card-hover cf-surface-card cf-event-card rounded-2xl overflow-hidden">
-          <div class="cf-card-glow-line h-3"></div>
-          <div class="p-6">
-            <span class="cf-tag inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3">Workshop</span>
-            <div class="cf-skeleton h-5 rounded mb-2 w-3/4 animate-pulse"></div>
-            <div class="cf-skeleton h-4 rounded mb-4 w-1/2 animate-pulse"></div>
-            <div class="cf-skeleton h-3 rounded mb-1 animate-pulse"></div>
-            <div class="cf-skeleton h-3 rounded mb-5 w-5/6 animate-pulse"></div>
-            <button (click)="goLogin()" class="cf-solid-btn w-full py-2.5 rounded-xl text-sm font-semibold">
-              Log in to Book
-            </button>
-          </div>
-        </div>
-      </div>
+  <footer class="home-footer">
+    <div>
+      <h3>WorkshopHub</h3>
+      <p class="muted">Elegant workshop operations for users and admins.</p>
     </div>
-  </section>
-
-  <!-- ===== HOW IT WORKS ===== -->
-  <section class="cf-section cf-section-alt py-20 px-4">
-    <div class="max-w-5xl mx-auto text-center mb-14">
-      <span class="cf-section-kicker">Simple Process</span>
-      <h2 class="cf-section-title mt-2">How It Works</h2>
-    </div>
-    <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
-      <!-- Connector line -->
-      <div class="cf-connector-line hidden sm:block absolute top-10 left-1/3 right-1/3 h-0.5 z-0"></div>
-
-      <div class="cf-step-card relative z-10 flex flex-col items-center text-center">
-        <div class="cf-step-icon w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#6366f1,#818cf8)">
-          <i class="fas fa-magnifying-glass text-white text-2xl"></i>
-        </div>
-        <div class="cf-step-index w-7 h-7 rounded-full text-sm font-bold flex items-center justify-center mb-3">1</div>
-        <h3 class="cf-card-title text-lg mb-2">Discover</h3>
-        <p class="cf-card-copy text-sm leading-relaxed">Browse hundreds of workshops by category, date, or location. Use search and filters to find exactly what you need.</p>
-      </div>
-
-      <div class="cf-step-card relative z-10 flex flex-col items-center text-center">
-        <div class="cf-step-icon w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#a855f7,#c084fc)">
-          <i class="fas fa-ticket text-white text-2xl"></i>
-        </div>
-        <div class="cf-step-index w-7 h-7 rounded-full text-sm font-bold flex items-center justify-center mb-3">2</div>
-        <h3 class="cf-card-title text-lg mb-2">Book</h3>
-        <p class="cf-card-copy text-sm leading-relaxed">Reserve your spot with our instant booking system. Get confirmation immediately and add it to your calendar.</p>
-      </div>
-
-      <div class="cf-step-card relative z-10 flex flex-col items-center text-center">
-        <div class="cf-step-icon w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,#10b981,#34d399)">
-          <i class="fas fa-rocket text-white text-2xl"></i>
-        </div>
-        <div class="cf-step-index w-7 h-7 rounded-full text-sm font-bold flex items-center justify-center mb-3">3</div>
-        <h3 class="cf-card-title text-lg mb-2">Grow</h3>
-        <p class="cf-card-copy text-sm leading-relaxed">Attend, learn from experts, network with peers, and track your professional development journey over time.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== STATISTICS ===== -->
-  <section class="cf-stats-section py-20 px-4">
-    <div class="max-w-5xl mx-auto">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div *ngFor="let s of stats" class="cf-stat-block text-center">
-          <div class="cf-stat-badge w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4">
-            <i [class]="s.icon + ' text-xl text-white'"></i>
-          </div>
-          <p class="cf-stat-hero-value text-4xl font-black mb-1">{{s.value}}</p>
-          <p class="cf-stat-hero-label text-sm font-medium">{{s.label}}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== TESTIMONIALS ===== -->
-  <section class="cf-section py-20 px-4">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-14">
-        <span class="cf-section-kicker">Success Stories</span>
-        <h2 class="cf-section-title mt-2">What Our Users Say</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div *ngFor="let t of testimonials" class="card-hover cf-surface-card cf-testimonial-card rounded-2xl p-8">
-          <div class="flex mb-4">
-            <i *ngFor="let s of stars(t.rating)" class="fas fa-star text-yellow-400 text-sm mr-0.5"></i>
-          </div>
-          <p class="cf-card-copy leading-relaxed mb-6 text-sm">"{{t.text}}"</p>
-          <div class="flex items-center gap-3">
-            <div class="cf-avatar-badge w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                 style="background:linear-gradient(135deg,#6366f1,#a855f7)">
-              {{t.avatar}}
-            </div>
-            <div>
-              <p class="cf-card-title font-semibold text-sm">{{t.name}}</p>
-              <p class="cf-meta text-xs">{{t.role}}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FAQ ===== -->
-  <section class="cf-section cf-section-alt py-20 px-4">
-    <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-14">
-        <span class="cf-section-kicker">Got Questions?</span>
-        <h2 class="cf-section-title mt-2">Frequently Asked</h2>
-      </div>
-      <div class="space-y-3">
-        <div *ngFor="let faq of faqs; let i = index" class="cf-faq-item rounded-2xl overflow-hidden" [class.cf-faq-open]="openFaq === i">
-          <button (click)="toggleFaq(i)" class="cf-faq-trigger w-full flex items-center justify-between px-6 py-5 text-left">
-            <span class="font-semibold text-sm">{{faq.q}}</span>
-            <i class="fas transition-transform duration-200" [class.fa-chevron-up]="openFaq === i" [class.fa-chevron-down]="openFaq !== i"></i>
-          </button>
-          <div *ngIf="openFaq === i" class="px-6 pb-5">
-            <p class="cf-card-copy text-sm leading-relaxed border-t pt-4">{{faq.a}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CTA Banner ===== -->
-  <section class="cf-section py-20 px-4">
-    <div class="cf-cta-shell max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl">
-      <div class="relative p-12 text-center">
-        <div class="cf-cta-orb cf-cta-orb-one absolute top-0 right-0 w-64 h-64 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-        <div class="cf-cta-orb cf-cta-orb-two absolute bottom-0 left-0 w-48 h-48 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-        <div class="relative z-10">
-          <span class="cf-cta-pill inline-block text-xs font-bold px-4 py-1.5 rounded-full mb-6">Limited Spots Available</span>
-          <h2 class="cf-cta-title text-3xl md:text-4xl font-black mb-4">Ready to Level Up?</h2>
-          <p class="cf-cta-copy text-lg mb-8 max-w-xl mx-auto">Join over 12,000 professionals who have accelerated their careers with WorkshopHub.</p>
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button (click)="goRegister()" class="cf-cta-primary px-8 py-4 rounded-2xl font-bold transition shadow-lg text-sm">
-              <i class="fas fa-user-plus mr-2"></i> Create Free Account
-            </button>
-            <button (click)="goLogin()" class="cf-cta-secondary px-8 py-4 rounded-2xl font-bold transition text-sm">
-              <i class="fas fa-right-to-bracket mr-2"></i> Sign In
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="cf-footer py-12 px-4">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-        <div>
-          <div class="flex items-center gap-3 mb-4">
-            <div class="cf-footer-brand-mark w-8 h-8 rounded-lg flex items-center justify-center">
-              <i class="fas fa-chalkboard-user text-white text-xs"></i>
-            </div>
-            <span class="cf-footer-brand font-bold">WorkshopHub</span>
-          </div>
-          <p class="cf-footer-copy text-sm leading-relaxed">The leading platform for workshop discovery and professional development worldwide.</p>
-        </div>
-        <div>
-          <h4 class="cf-footer-heading font-semibold text-sm mb-4">Platform</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">Browse Workshops</a></li>
-            <li><a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">My Bookings</a></li>
-            <li><a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">Feedback</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="cf-footer-heading font-semibold text-sm mb-4">Organisers</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a (click)="goRegister()" class="cf-footer-link cursor-pointer transition">Create Account</a></li>
-            <li><a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">Admin Dashboard</a></li>
-            <li><a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">Manage Events</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="cf-footer-heading font-semibold text-sm mb-4">Categories</h4>
-          <ul class="space-y-2 text-sm">
-            <li *ngFor="let cat of categories.slice(0,4)">
-              <a (click)="goLogin()" class="cf-footer-link cursor-pointer transition">{{cat.name}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="cf-footer-bottom border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p class="cf-footer-copy text-xs">© 2026 WorkshopHub. Built with care for learners everywhere.</p>
-        <div class="flex items-center gap-4">
-          <a class="cf-footer-social transition cursor-pointer"><i class="fab fa-twitter"></i></a>
-          <a class="cf-footer-social transition cursor-pointer"><i class="fab fa-linkedin"></i></a>
-          <a class="cf-footer-social transition cursor-pointer"><i class="fab fa-github"></i></a>
-          <a class="cf-footer-social transition cursor-pointer"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
+    <div class="home-footer-links">
+      <button class="btn-ghost" (click)="goLogin()">Login</button>
+      <button class="btn-primary" (click)="goRegister()">Create Account</button>
     </div>
   </footer>
 </div>

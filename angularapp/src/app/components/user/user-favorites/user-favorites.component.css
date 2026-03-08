@@ -1,0 +1,16 @@
+@import '../user-workshop-event-list/user-workshop-event-list.component.css';
+
+.event-card {
+  border: 1px solid var(--theme-border);
+}
+
+.event-body {
+  padding: 18px;
+}
+
+.event-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

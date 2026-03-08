@@ -1,1 +1,56 @@
-/* add-workshop-event — Tailwind */
+.page-body-narrow {
+  max-width: 880px;
+}
+
+.header-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-shell {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid-two {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-muted);
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .form-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .form-actions button {
+    flex: 1;
+  }
+}

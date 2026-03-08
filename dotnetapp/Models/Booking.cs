@@ -18,5 +18,7 @@ namespace dotnetapp.Models
         public string City { get; set; }
         public string Proof { get; set; }
         public string? AdditionalNotes { get; set; }
+        public bool Is24HourReminderSent { get; set; }
+        public bool Is6HourReminderSent { get; set; }
     }
 }

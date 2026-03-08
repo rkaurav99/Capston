@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppThemeDefinition, AppThemeName, ThemeService } from '../../services/theme.service';
 
@@ -8,16 +8,12 @@ import { AppThemeDefinition, AppThemeName, ThemeService } from '../../services/t
   styleUrls: ['./theme-toggle.component.css']
 })
 export class ThemeToggleComponent implements OnInit, OnDestroy {
-  isOpen = false;
   themes: AppThemeDefinition[] = [];
-  activeTheme: AppThemeName = 'cyber-bunker';
+  activeTheme: AppThemeName = 'light';
 
   private themeSubscription?: Subscription;
 
-  constructor(
-    private themeService: ThemeService,
-    private elementRef: ElementRef<HTMLElement>
-  ) {}
+  constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.themes = this.themeService.getThemes();
@@ -31,18 +27,8 @@ export class ThemeToggleComponent implements OnInit, OnDestroy {
     this.themeSubscription?.unsubscribe();
   }
 
-  togglePanel(event?: MouseEvent): void {
-    event?.stopPropagation();
-    this.isOpen = !this.isOpen;
-  }
-
-  closePanel(): void {
-    this.isOpen = false;
-  }
-
   selectTheme(theme: AppThemeName): void {
     this.themeService.setTheme(theme);
-    this.isOpen = false;
   }
 
   getActiveThemeDefinition(): AppThemeDefinition | undefined {
@@ -51,21 +37,5 @@ export class ThemeToggleComponent implements OnInit, OnDestroy {
 
   trackTheme(index: number, theme: AppThemeDefinition): string {
     return theme.key;
-  }
-
-  @HostListener('document:click', ['$event'])
-  handleDocumentClick(event: MouseEvent): void {
-    if (!this.isOpen) {
-      return;
-    }
-
-    if (!this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.closePanel();
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  handleEscape(): void {
-    this.closePanel();
   }
 }

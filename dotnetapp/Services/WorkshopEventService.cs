@@ -8,10 +8,12 @@ namespace dotnetapp.Services
     public class WorkshopEventService
     {
         private readonly ApplicationDbContext _context;
+        private readonly NotificationService _notificationService;
 
-        public WorkshopEventService(ApplicationDbContext context)
+        public WorkshopEventService(ApplicationDbContext context, NotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<IEnumerable<WorkshopEvent>> GetAllWorkshopEvents()
@@ -24,8 +26,30 @@ namespace dotnetapp.Services
             return await _context.WorkshopEvents.FindAsync(workshopEventId);
         }
 
+        private void ValidateWorkshopEvent(WorkshopEvent e)
+        {
+            if (string.IsNullOrWhiteSpace(e.EventName))
+                throw new WorkshopEventException("Event name is required.");
+            if (string.IsNullOrWhiteSpace(e.OrganizerName))
+                throw new WorkshopEventException("Organizer name is required.");
+            if (string.IsNullOrWhiteSpace(e.Category))
+                throw new WorkshopEventException("Category is required.");
+            if (string.IsNullOrWhiteSpace(e.Description))
+                throw new WorkshopEventException("Description is required.");
+            if (string.IsNullOrWhiteSpace(e.Location))
+                throw new WorkshopEventException("Location is required.");
+            if (e.StartDateTime < DateTime.UtcNow)
+                throw new WorkshopEventException("Start date cannot be earlier than the current date.");
+            if (e.EndDateTime <= e.StartDateTime)
+                throw new WorkshopEventException("End date must be later than the start date.");
+            if (e.Capacity <= 0)
+                throw new WorkshopEventException("Capacity must be greater than zero.");
+        }
+
         public async Task<bool> AddWorkshopEvent(WorkshopEvent workshopEvent)
         {
+            ValidateWorkshopEvent(workshopEvent);
+
             var existingEvent = await _context.WorkshopEvents
                 .FirstOrDefaultAsync(e => e.EventName == workshopEvent.EventName);
 
@@ -39,6 +63,8 @@ namespace dotnetapp.Services
 
         public async Task<bool> UpdateWorkshopEvent(int workshopEventId, WorkshopEvent workshopEvent)
         {
+            ValidateWorkshopEvent(workshopEvent);
+
             var existingEvent = await _context.WorkshopEvents.FindAsync(workshopEventId);
             if (existingEvent == null)
                 return false;
@@ -59,6 +85,24 @@ namespace dotnetapp.Services
             existingEvent.Capacity = workshopEvent.Capacity;
 
             await _context.SaveChangesAsync();
+
+            var impactedUserIds = await _context.Bookings
+                .Where(b => b.WorkshopEventId == workshopEventId && b.BookingStatus != "Cancelled")
+                .Select(b => b.UserId)
+                .Distinct()
+                .ToListAsync();
+
+            foreach (var userId in impactedUserIds)
+            {
+                await _notificationService.CreateNotification(
+                    userId,
+                    "Workshop Updated",
+                    $"The workshop '{existingEvent.EventName}' has been updated. Please review the latest details.",
+                    "Workshop",
+                    workshopEventId
+                );
+            }
+
             return true;
         }
 

@@ -10,10 +10,12 @@ namespace dotnetapp.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly NotificationService _notificationService;
 
-        public AuthenticationController(IAuthService authService)
+        public AuthenticationController(IAuthService authService, NotificationService notificationService)
         {
             _authService = authService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("login")]
@@ -83,6 +85,17 @@ namespace dotnetapp.Controllers
                 var (status, message) = await _authService.UpdateUser(id, model);
                 if (status == 0)
                     return BadRequest(new { message });
+
+                if (!string.IsNullOrWhiteSpace(model.Password))
+                {
+                    await _notificationService.CreateNotification(
+                        id,
+                        "Password Changed",
+                        "Your password has been changed successfully.",
+                        "Security"
+                    );
+                }
+
                 return Ok(new { message });
             }
             catch (Exception ex)

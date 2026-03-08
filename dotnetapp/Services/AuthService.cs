@@ -55,6 +55,16 @@ namespace dotnetapp.Services
         {
             model.Password = DecryptPassword(model.Password);
 
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.Equals(model.SecretKey, "LTM2025", StringComparison.Ordinal))
+                    return (0, "Invalid admin secret key");
+            }
+            else
+            {
+                model.SecretKey = null;
+            }
+
             var userExists = await userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
                 return (0, "User already exists");

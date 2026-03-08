@@ -1,1 +1,79 @@
-/* booking form — Tailwind */
+@import '../../admin/add-workshop-event/add-workshop-event.component.css';
+
+.booking-event-note {
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.booking-event-title {
+  color: var(--theme-text-strong);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.waitlist-btn {
+  margin-top: 10px;
+}
+
+.upload-zone {
+  border: 1.5px dashed var(--theme-border-strong);
+  background: rgba(var(--theme-panel-rgb), 0.46);
+  border-radius: 14px;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--theme-muted);
+  cursor: pointer;
+  transition: border-color var(--tr-fast), background-color var(--tr-fast);
+}
+
+.upload-zone i {
+  font-size: 1.4rem;
+}
+
+.upload-zone.upload-ready {
+  border-color: color-mix(in srgb, var(--theme-success) 50%, transparent);
+  color: var(--theme-success);
+}
+
+.upload-zone.upload-error {
+  border-color: color-mix(in srgb, var(--theme-danger) 50%, transparent);
+  color: var(--theme-danger);
+}
+
+.upload-error-text {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--theme-danger);
+}
+
+.upload-preview {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-preview img {
+  width: 90px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+}
+
+.upload-preview p {
+  color: var(--theme-text-strong);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.hidden {
+  display: none;
+}

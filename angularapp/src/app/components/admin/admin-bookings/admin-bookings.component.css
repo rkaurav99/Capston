@@ -1,1 +1,23 @@
-/* admin-bookings — Tailwind */
+.booking-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-approved {
+  background: rgba(19, 136, 106, 0.12);
+  color: var(--theme-success);
+  border-color: color-mix(in srgb, var(--theme-success) 35%, transparent);
+}
+
+.badge-submitted,
+.badge-pending {
+  background: rgba(98, 130, 176, 0.14);
+  color: var(--theme-primary);
+}
+
+.badge-cancelled {
+  background: rgba(194, 63, 90, 0.12);
+  color: var(--theme-danger);
+  border-color: color-mix(in srgb, var(--theme-danger) 35%, transparent);
+}

@@ -45,16 +45,28 @@
     <a routerLink="/admin/add-workshop-event" class="btn-ghost">Create Workshop</a>
   </div>
 
-  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'grid'" class="event-grid fade-in">
+  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'grid'" class="event-grid">
     <div *ngFor="let ev of filteredEvents" class="card event-card">
       <div class="event-accent"></div>
       <div class="event-body">
         <div class="event-meta">
           <span class="badge"><i class="fas fa-tag"></i>{{ev.Category}}</span>
           <span class="muted"><i class="fas fa-users"></i>{{ev.Capacity}} seats</span>
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold" [ngClass]="getStatusClass(ev.Status)">
+            {{ev.Status || 'Upcoming'}}
+          </span>
         </div>
         <h3>{{ev.EventName}}</h3>
         <p class="muted">Organizer · {{ev.OrganizerName}}</p>
+        <p class="text-xs text-amber-500" *ngIf="ratingSummaryMap[ev.WorkshopEventId]">
+          <i class="fas fa-star"></i> {{ratingSummaryMap[ev.WorkshopEventId].AverageRating}} ({{ratingSummaryMap[ev.WorkshopEventId].TotalRatings}} ratings)
+        </p>
+        <p class="text-xs text-indigo-500">
+          <i class="fas fa-user-clock"></i> Waitlist: {{waitlistCountMap[ev.WorkshopEventId] || 0}}
+        </p>
+        <button class="btn-ghost text-xs" (click)="openWaitlistPreview(ev.WorkshopEventId, ev.EventName)">
+          <i class="fas fa-users"></i> View Waitlist
+        </button>
         <div class="event-info">
           <div><i class="fas fa-calendar-days"></i>{{ev.StartDateTime | date:'MMM d, y'}} - {{ev.EndDateTime | date:'MMM d, y'}}</div>
           <div><i class="fas fa-location-dot"></i>{{ev.Location}}</div>
@@ -71,7 +83,7 @@
     </div>
   </div>
 
-  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'list'" class="panel table-wrap fade-in">
+  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'list'" class="panel table-wrap">
     <div class="table-scroll">
       <table class="event-table">
         <thead>
@@ -81,6 +93,7 @@
             <th>Category</th>
             <th>Date</th>
             <th>Capacity</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -94,6 +107,7 @@
             <td><span class="badge">{{ev.Category}}</span></td>
             <td>{{ev.StartDateTime | date:'MMM d, y'}}</td>
             <td>{{ev.Capacity}}</td>
+            <td><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold" [ngClass]="getStatusClass(ev.Status)">{{ev.Status || 'Upcoming'}}</span></td>
             <td>
               <div class="event-actions">
                 <button (click)="editEvent(ev.WorkshopEventId)" class="btn-ghost">
@@ -104,6 +118,35 @@
                 </button>
               </div>
             </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="waitlistPreviewEventName" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70" (click)="closeWaitlistPreview()">
+  <div class="bg-white rounded-2xl p-5 w-[560px] max-w-[95vw]" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-base font-bold text-gray-800">Waitlist - {{waitlistPreviewEventName}}</h3>
+      <button class="btn-ghost" (click)="closeWaitlistPreview()"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <div *ngIf="waitlistPreview.length === 0" class="text-sm text-gray-500">No waitlist users for this event.</div>
+    <div *ngIf="waitlistPreview.length > 0" class="max-h-80 overflow-auto border border-gray-100 rounded-lg">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="text-left px-3 py-2">User</th>
+            <th class="text-left px-3 py-2">Joined</th>
+            <th class="text-left px-3 py-2">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of waitlistPreview" class="border-t border-gray-100">
+            <td class="px-3 py-2">{{row.User?.Username || ('User #' + row.UserId)}}</td>
+            <td class="px-3 py-2">{{row.JoinedAt | date:'MMM d, y, h:mm a'}}</td>
+            <td class="px-3 py-2">{{row.Status}}</td>
           </tr>
         </tbody>
       </table>

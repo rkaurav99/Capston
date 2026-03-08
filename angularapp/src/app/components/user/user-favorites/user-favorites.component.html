@@ -1,0 +1,47 @@
+<div class="page-header">
+  <div>
+    <h1>Favorite Workshops</h1>
+    <p class="muted">Your bookmarked workshops in one place</p>
+  </div>
+</div>
+
+<div class="page-body">
+  <div *ngIf="errorMessage" class="panel alert error">
+    <i class="fas fa-triangle-exclamation"></i> {{errorMessage}}
+  </div>
+
+  <div *ngIf="loading" class="panel loading">
+    <div class="spinner"></div>
+    <p class="muted">Loading favorites...</p>
+  </div>
+
+  <div *ngIf="!loading && favorites.length === 0" class="panel empty-state">
+    <div class="empty-icon"><i class="fas fa-bookmark"></i></div>
+    <h3>No favorites yet</h3>
+    <p class="muted">Bookmark events from the Browse Events page.</p>
+  </div>
+
+  <div *ngIf="!loading && favorites.length > 0" class="event-grid">
+    <div class="card event-card" *ngFor="let fav of favorites">
+      <div class="event-body">
+        <div class="event-meta">
+          <span class="badge"><i class="fas fa-tag"></i>{{fav.WorkshopEvent?.Category}}</span>
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+            {{fav.WorkshopEvent?.Status || 'Upcoming'}}
+          </span>
+        </div>
+        <h3>{{fav.WorkshopEvent?.EventName}}</h3>
+        <p class="muted">Organizer · {{fav.WorkshopEvent?.OrganizerName}}</p>
+        <p class="muted"><i class="fas fa-location-dot"></i> {{fav.WorkshopEvent?.Location}}</p>
+        <div class="event-actions">
+          <button class="btn-primary" (click)="openWorkshop(fav.WorkshopEventId)">
+            <i class="fas fa-ticket"></i> View Details
+          </button>
+          <button class="btn-ghost danger" (click)="removeFavorite(fav.WorkshopEventId)">
+            <i class="fas fa-bookmark"></i> Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

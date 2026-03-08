@@ -6,6 +6,9 @@ import { Feedback } from '../../../models/feedback.model';
 import { WorkshopEventService } from '../../../services/workshop-event.service';
 import { BookingService } from '../../../services/booking.service';
 import { FeedbackService } from '../../../services/feedback.service';
+import { WaitlistService } from '../../../services/waitlist.service';
+import { WorkshopRatingService } from '../../../services/workshop-rating.service';
+import { WorkshopRatingSummary } from '../../../models/workshop-rating.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -16,13 +19,18 @@ export class AdminDashboardComponent implements OnInit {
   workshops: WorkshopEvent[] = [];
   bookings: Booking[] = [];
   feedbacks: Feedback[] = [];
+  ratingSummaries: WorkshopRatingSummary[] = [];
   loading = true;
-  private pending = 3;
+  private pending = 4;
+  waitlistedCount = 0;
+  averageRating = 0;
 
   constructor(
     private workshopService: WorkshopEventService,
     private bookingService: BookingService,
     private feedbackService: FeedbackService,
+    private waitlistService: WaitlistService,
+    private workshopRatingService: WorkshopRatingService,
     private router: Router
   ) {}
 
@@ -35,6 +43,43 @@ export class AdminDashboardComponent implements OnInit {
     );
     this.feedbackService.getAllFeedbacks().subscribe(
       d => { this.feedbacks = d; this.dec(); }, () => this.dec()
+    );
+    this.workshopRatingService.getAllRatingSummaries().subscribe(
+      d => {
+        this.ratingSummaries = d;
+        this.averageRating = d.length
+          ? Number((d.reduce((sum, x) => sum + x.AverageRating, 0) / d.length).toFixed(2))
+          : 0;
+        this.dec();
+      },
+      () => this.dec()
+    );
+
+    // Aggregate waitlist count by scanning event waitlists
+    this.workshopService.getAllWorkshopEvents().subscribe(
+      (events) => {
+        if (!events.length) return;
+        let done = 0;
+        let total = 0;
+        events.forEach((ev) => {
+          this.waitlistService.getWaitlistByEvent(ev.WorkshopEventId).subscribe(
+            (rows) => {
+              total += rows.filter(r => r.Status === 'Waiting').length;
+              done++;
+              if (done === events.length) {
+                this.waitlistedCount = total;
+              }
+            },
+            () => {
+              done++;
+              if (done === events.length) {
+                this.waitlistedCount = total;
+              }
+            }
+          );
+        });
+      },
+      () => {}
     );
   }
 
@@ -58,6 +103,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get pendingFeedbacks() { return this.feedbacks.filter(f => !f.AdminResponse).length; }
+  get liveWorkshops() { return this.workshops.filter(w => w.Status === 'Live').length; }
+  get upcomingWorkshops() { return this.workshops.filter(w => w.Status === 'Upcoming').length; }
 
   badgeClass(status: string): string {
     const m: {[k:string]:string} = {

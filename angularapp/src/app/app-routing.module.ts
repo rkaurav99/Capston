@@ -24,6 +24,7 @@ import { UserWorkshopEventListComponent } from './components/user/user-workshop-
 import { AddBookingComponent } from './components/user/add-booking/add-booking.component';
 import { UserMyBookingsComponent } from './components/user/user-my-bookings/user-my-bookings.component';
 import { UserFeedbackComponent } from './components/user/user-feedback/user-feedback.component';
+import { UserFavoritesComponent } from './components/user/user-favorites/user-favorites.component';
 
 // Shared / Profile
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
@@ -49,6 +50,7 @@ const routes: Routes = [
   { path: 'user/book-event/:eventId', component: AddBookingComponent, canActivate: [AuthGuard] },
   { path: 'user/my-bookings', component: UserMyBookingsComponent, canActivate: [AuthGuard] },
   { path: 'user/feedback', component: UserFeedbackComponent, canActivate: [AuthGuard] },
+  { path: 'user/favorites', component: UserFavoritesComponent, canActivate: [AuthGuard] },
 
   // Shared
   { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthGuard] },

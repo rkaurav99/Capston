@@ -8,6 +8,32 @@
       <h1 class="brand-title">WorkshopHub</h1>
     </div>
     <div class="topbar-actions">
+      <app-theme-toggle class="nav-theme-toggle"></app-theme-toggle>
+      <div class="notif-wrap" *ngIf="isLoggedIn && isDashboardRoute">
+        <button class="notif-btn" (click)="toggleNotifications($event)" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notif-count" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+        </button>
+        <div class="notif-panel" *ngIf="notificationOpen" (click)="$event.stopPropagation()">
+          <div class="notif-head">
+            <p>Notifications</p>
+            <button (click)="markAllRead()" class="btn-ghost small-btn">Mark all read</button>
+          </div>
+          <div class="notif-list" *ngIf="notifications.length > 0">
+            <button type="button" class="notif-item" *ngFor="let n of notifications | slice:0:8" [class.unread]="!n.IsRead" (click)="onNotificationClick(n, $event)">
+              <div class="notif-item-head">
+                <div class="notif-item-title">{{n.Title}}</div>
+                <span class="notif-type" [ngClass]="'notif-type--' + (n.Type || 'general').toLowerCase()">{{n.Type || 'General'}}</span>
+              </div>
+              <p class="notif-item-msg">{{n.Message}}</p>
+              <span class="notif-item-time">{{n.CreatedAt | date:'MMM d, h:mm a'}}</span>
+            </button>
+          </div>
+          <div class="notif-empty" *ngIf="notifications.length === 0">
+            No notifications yet
+          </div>
+        </div>
+      </div>
       <div class="topbar-links" *ngIf="!isLoggedIn">
         <a routerLink="/login" class="btn-ghost">Login</a>
         <a routerLink="/register" class="btn-primary">Register</a>
@@ -46,6 +72,30 @@
       </div>
       <h1 class="brand-title">WorkshopHub</h1>
     </div>
+    <app-theme-toggle class="nav-theme-toggle"></app-theme-toggle>
+    <div class="notif-wrap" *ngIf="isLoggedIn && isDashboardRoute">
+      <button class="notif-btn" (click)="toggleNotifications($event)" title="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notif-count" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+      </button>
+      <div class="notif-panel" *ngIf="notificationOpen" (click)="$event.stopPropagation()">
+        <div class="notif-head">
+          <p>Notifications</p>
+          <button (click)="markAllRead()" class="btn-ghost small-btn">Mark all read</button>
+        </div>
+        <div class="notif-list" *ngIf="notifications.length > 0">
+          <button type="button" class="notif-item" *ngFor="let n of notifications | slice:0:8" [class.unread]="!n.IsRead" (click)="onNotificationClick(n, $event)">
+            <div class="notif-item-head">
+              <div class="notif-item-title">{{n.Title}}</div>
+              <span class="notif-type" [ngClass]="'notif-type--' + (n.Type || 'general').toLowerCase()">{{n.Type || 'General'}}</span>
+            </div>
+            <p class="notif-item-msg">{{n.Message}}</p>
+            <span class="notif-item-time">{{n.CreatedAt | date:'MMM d, h:mm a'}}</span>
+          </button>
+        </div>
+        <div class="notif-empty" *ngIf="notifications.length === 0">No notifications yet</div>
+      </div>
+    </div>
   </header>
 
   <aside class="sidebar" [class.sidebar-open]="sidebarOpen" [class.sidebar-collapsed]="sidebarCollapsed">
@@ -78,6 +128,33 @@
       </div>
     </div>
 
+    <div class="sidebar-utilities" *ngIf="isLoggedIn && isDashboardRoute">
+      <div class="notif-wrap">
+        <button class="notif-btn" (click)="toggleNotifications($event)" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notif-count" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+        </button>
+        <div class="notif-panel" *ngIf="notificationOpen" (click)="$event.stopPropagation()">
+          <div class="notif-head">
+            <p>Notifications</p>
+            <button (click)="markAllRead()" class="btn-ghost small-btn">Mark all read</button>
+          </div>
+          <div class="notif-list" *ngIf="notifications.length > 0">
+            <button type="button" class="notif-item" *ngFor="let n of notifications | slice:0:8" [class.unread]="!n.IsRead" (click)="onNotificationClick(n, $event)">
+              <div class="notif-item-head">
+                <div class="notif-item-title">{{n.Title}}</div>
+                <span class="notif-type" [ngClass]="'notif-type--' + (n.Type || 'general').toLowerCase()">{{n.Type || 'General'}}</span>
+              </div>
+              <p class="notif-item-msg">{{n.Message}}</p>
+              <span class="notif-item-time">{{n.CreatedAt | date:'MMM d, h:mm a'}}</span>
+            </button>
+          </div>
+          <div class="notif-empty" *ngIf="notifications.length === 0">No notifications yet</div>
+        </div>
+      </div>
+      <app-theme-toggle class="nav-theme-toggle"></app-theme-toggle>
+    </div>
+
     <nav class="sidebar-nav">
       <ng-container *ngIf="userRole === 'Admin'">
         <p class="nav-label">Administration</p>
@@ -102,6 +179,8 @@
           <i class="fas fa-calendar-days"></i><span class="nav-text">Browse Events</span></a>
         <a routerLink="/user/my-bookings" routerLinkActive="active-nav" class="nav-link" title="My Bookings">
           <i class="fas fa-ticket"></i><span class="nav-text">My Bookings</span></a>
+        <a routerLink="/user/favorites" routerLinkActive="active-nav" class="nav-link" title="Favorites">
+          <i class="fas fa-bookmark"></i><span class="nav-text">Favorites</span></a>
         <a routerLink="/user/feedback" routerLinkActive="active-nav" class="nav-link" title="Feedback">
           <i class="fas fa-star"></i><span class="nav-text">Feedback</span></a>
         <p class="nav-label nav-label-gap">Account</p>

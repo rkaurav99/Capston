@@ -5,6 +5,9 @@ import { WorkshopEvent } from '../../../models/workshop-event.model';
 import { BookingService } from '../../../services/booking.service';
 import { WorkshopEventService } from '../../../services/workshop-event.service';
 import { AuthService } from '../../../services/auth.service';
+import { FavoriteWorkshopService } from '../../../services/favorite-workshop.service';
+import { NotificationService } from '../../../services/notification.service';
+import { WorkshopRatingService } from '../../../services/workshop-rating.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -15,25 +18,45 @@ export class UserDashboardComponent implements OnInit {
   bookings: Booking[] = [];
   workshops: WorkshopEvent[] = [];
   loading = true;
+  favoritesCount = 0;
+  unreadNotifications = 0;
+  completedAwaitingRating = 0;
 
   constructor(
     private bookingService: BookingService,
     private workshopService: WorkshopEventService,
+    private favoriteWorkshopService: FavoriteWorkshopService,
+    private notificationService: NotificationService,
+    private workshopRatingService: WorkshopRatingService,
     private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    let pending = 2;
+    let pending = 4;
     const dec = () => { if (--pending === 0) this.loading = false; };
     const uid = this.authService.getUserId();
     this.bookingService.getBookingsByUserId(uid).subscribe(
-      (d: Booking[]) => { this.bookings = d; dec(); },
+      (d: Booking[]) => {
+        this.bookings = d;
+        this.computeCompletedAwaitingRating();
+        dec();
+      },
       () => { this.bookings = []; dec(); }
     );
     this.workshopService.getAllWorkshopEvents().subscribe(
       (d: WorkshopEvent[]) => { this.workshops = d; dec(); },
       () => { this.workshops = []; dec(); }
+    );
+
+    this.favoriteWorkshopService.getFavorites().subscribe(
+      (data) => { this.favoritesCount = data.length; dec(); },
+      () => { this.favoritesCount = 0; dec(); }
+    );
+
+    this.notificationService.getUnreadCount().subscribe(
+      (data) => { this.unreadNotifications = data.unreadCount; dec(); },
+      () => { this.unreadNotifications = 0; dec(); }
     );
   }
 
@@ -60,4 +83,36 @@ export class UserDashboardComponent implements OnInit {
   goBook(id: number): void { this.router.navigate(['/user/book-event', id]); }
   goBookings(): void { this.router.navigate(['/user/my-bookings']); }
   goEvents(): void { this.router.navigate(['/user/workshop-events']); }
+
+  private computeCompletedAwaitingRating(): void {
+    const userId = this.authService.getUserId();
+    const completed = this.bookings.filter(b => b.WorkshopEvent && new Date(b.WorkshopEvent.EndDateTime) < new Date());
+
+    if (completed.length === 0) {
+      this.completedAwaitingRating = 0;
+      return;
+    }
+
+    let awaiting = 0;
+    let checked = 0;
+    completed.forEach((booking) => {
+      this.workshopRatingService.getRatingsByWorkshop(booking.WorkshopEventId).subscribe(
+        (ratings) => {
+          if (!ratings.some(r => r.UserId === userId)) {
+            awaiting++;
+          }
+          checked++;
+          if (checked === completed.length) {
+            this.completedAwaitingRating = awaiting;
+          }
+        },
+        () => {
+          checked++;
+          if (checked === completed.length) {
+            this.completedAwaitingRating = awaiting;
+          }
+        }
+      );
+    });
+  }
 }

@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type AppThemeName = 'cyber-bunker' | 'minimalist' | 'royal-blue' | 'tokyo';
+export type AppThemeName = 'light' | 'dark';
 
 export interface AppThemeDefinition {
   key: AppThemeName;
@@ -22,47 +22,31 @@ export class ThemeService {
 
   private readonly themeDefinitions: AppThemeDefinition[] = [
     {
-      key: 'cyber-bunker',
-      name: 'Cyber Bunker',
-      tagline: 'Glowing command center',
-      description: 'Dark graphite panels with premium yellow neon accents and a high-end AI console feel.',
-      icon: 'fas fa-shield-halved',
-      preview: ['#09090b', '#111827', '#facc15', '#fde047']
+      key: 'light',
+      name: 'Light',
+      tagline: 'Clean and focused',
+      description: 'Bright minimal surfaces with subtle contrast and high readability.',
+      icon: 'fas fa-sun',
+      preview: ['#f6f7fb', '#ffffff', '#0f172a', '#94a3b8']
     },
     {
-      key: 'minimalist',
-      name: 'Minimalist',
-      tagline: 'Quiet luxury',
-      description: 'A bright refined workspace with soft grays, subtle contrast, and elegant restraint.',
-      icon: 'fas fa-circle-half-stroke',
-      preview: ['#f8fafc', '#ffffff', '#cbd5e1', '#94a3b8']
-    },
-    {
-      key: 'royal-blue',
-      name: 'Royal Blue',
-      tagline: 'Executive dashboard',
-      description: 'Deep navy surfaces, premium sapphire highlights, and polished enterprise depth.',
-      icon: 'fas fa-gem',
-      preview: ['#0f172a', '#172554', '#2563eb', '#60a5fa']
-    },
-    {
-      key: 'tokyo',
-      name: 'Tokyo',
-      tagline: 'Neon future grid',
-      description: 'A cool cyber aesthetic with teal-cyan glows inspired by futuristic SaaS interfaces.',
-      icon: 'fas fa-bolt-lightning',
-      preview: ['#06131a', '#0f2b33', '#14b8a6', '#22d3ee']
+      key: 'dark',
+      name: 'Dark',
+      tagline: 'Modern and sleek',
+      description: 'Dark neutral surfaces with balanced highlights for long sessions.',
+      icon: 'fas fa-moon',
+      preview: ['#0b1220', '#111827', '#f8fafc', '#334155']
     }
   ];
 
-  private readonly currentThemeSubject = new BehaviorSubject<AppThemeName>('cyber-bunker');
+  private readonly currentThemeSubject = new BehaviorSubject<AppThemeName>('light');
   readonly currentTheme$ = this.currentThemeSubject.asObservable();
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
   initializeTheme(): void {
     const storedTheme = this.readStoredTheme();
-    const initialTheme = storedTheme ?? 'cyber-bunker';
+    const initialTheme = storedTheme ?? 'light';
     this.applyTheme(initialTheme);
   }
 
@@ -87,7 +71,7 @@ export class ThemeService {
     body.setAttribute('data-theme', theme);
     body.classList.remove(...allThemeClasses);
     body.classList.add(`${this.themeClassPrefix}${theme}`);
-    body.style.setProperty('color-scheme', theme === 'minimalist' ? 'light' : 'dark');
+    body.style.setProperty('color-scheme', theme === 'dark' ? 'dark' : 'light');
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.storageKey, theme);

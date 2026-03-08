@@ -32,6 +32,7 @@ import { UserWorkshopEventListComponent } from './components/user/user-workshop-
 import { AddBookingComponent } from './components/user/add-booking/add-booking.component';
 import { UserMyBookingsComponent } from './components/user/user-my-bookings/user-my-bookings.component';
 import { UserFeedbackComponent } from './components/user/user-feedback/user-feedback.component';
+import { UserFavoritesComponent } from './components/user/user-favorites/user-favorites.component';
 
 // Profile
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
@@ -55,6 +56,7 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
     AddBookingComponent,
     UserMyBookingsComponent,
     UserFeedbackComponent,
+    UserFavoritesComponent,
     EditProfileComponent
   ],
   imports: [

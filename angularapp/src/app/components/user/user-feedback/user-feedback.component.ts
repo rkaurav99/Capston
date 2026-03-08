@@ -16,6 +16,9 @@ export class UserFeedbackComponent implements OnInit {
   bookings: Booking[] = [];
   newFeedbackText: string = '';
   selectedBookingId: number | null = null;
+  rating: number = 0;
+  hoverRating: number = 0;
+  ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
   errorMessage: string = '';
   successMessage: string = '';
   loading: boolean = false;
@@ -48,7 +51,10 @@ export class UserFeedbackComponent implements OnInit {
   }
 
   addFeedback(): void {
-    if (!this.newFeedbackText.trim()) return;
+    if (this.rating === 0) {
+      this.errorMessage = 'Please select a rating.';
+      return;
+    }
 
     this.errorMessage = '';
     this.successMessage = '';
@@ -58,6 +64,7 @@ export class UserFeedbackComponent implements OnInit {
       UserId: this.authService.getUserId(),
       BookingId: this.selectedBookingId || undefined,
       FeedbackText: this.newFeedbackText,
+      Rating: this.rating,
       Date: new Date()
     };
 
@@ -67,6 +74,8 @@ export class UserFeedbackComponent implements OnInit {
         this.successMessage = 'Feedback submitted successfully!';
         this.newFeedbackText = '';
         this.selectedBookingId = null;
+        this.rating = 0;
+        this.hoverRating = 0;
         this.loadFeedbacks();
         setTimeout(() => this.successMessage = '', 3000);
       },
@@ -75,6 +84,10 @@ export class UserFeedbackComponent implements OnInit {
         this.errorMessage = 'Failed to submit feedback.';
       }
     );
+  }
+
+  setRating(value: number): void {
+    this.rating = value;
   }
 
   deleteFeedback(feedbackId: number): void {

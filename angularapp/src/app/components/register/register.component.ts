@@ -10,9 +10,13 @@ import { User } from '../../models/user.model';
 })
 export class RegisterComponent {
 
+  private readonly ADMIN_SECRET_KEY = 'LTM2025';
   user: User = new User();
   confirmPassword: string = '';
   confirmPasswordError: string = '';
+  roleError: string = '';
+  secretKeyError: string = '';
+  isRoleMenuOpen: boolean = false;
   showPassword = false;
   showConfirmPassword = false;
   errorMessage: string = '';
@@ -25,10 +29,30 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
     this.confirmPasswordError = '';
+    this.roleError = '';
+    this.secretKeyError = '';
+
+    if (!this.user.UserRole || this.user.UserRole.trim().length === 0) {
+      this.roleError = 'Please select a role.';
+      return;
+    }
 
     if (this.user.Password !== this.confirmPassword) {
       this.confirmPasswordError = 'Passwords do not match.';
       return;
+    }
+
+    if (this.isAdminRole()) {
+      if (!this.user.SecretKey || this.user.SecretKey.trim().length === 0) {
+        this.secretKeyError = 'Secret key is required for Admin registration.';
+        return;
+      }
+      if (this.user.SecretKey.trim() !== this.ADMIN_SECRET_KEY) {
+        this.secretKeyError = 'Invalid Admin secret key.';
+        return;
+      }
+    } else {
+      this.user.SecretKey = '';
     }
 
     this.loading = true;
@@ -56,5 +80,27 @@ export class RegisterComponent {
 
   goToLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  isAdminRole(): boolean {
+    return this.user.UserRole === 'Admin';
+  }
+
+  onRoleChange(): void {
+    this.roleError = '';
+    this.secretKeyError = '';
+    if (!this.isAdminRole()) {
+      this.user.SecretKey = '';
+    }
+  }
+
+  toggleRoleMenu(): void {
+    this.isRoleMenuOpen = !this.isRoleMenuOpen;
+  }
+
+  selectRole(role: 'User' | 'Admin'): void {
+    this.user.UserRole = role;
+    this.isRoleMenuOpen = false;
+    this.onRoleChange();
   }
 }

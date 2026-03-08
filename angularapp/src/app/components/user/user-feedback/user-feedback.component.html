@@ -26,11 +26,28 @@
       </div>
 
       <div class="field">
-        <label>Your Feedback *</label>
-        <textarea [(ngModel)]="newFeedbackText" rows="4" class="input" placeholder="Share your thoughts about the workshop experience..."></textarea>
+        <label>Rating *</label>
+        <div class="star-rating">
+          <button type="button" *ngFor="let star of [1,2,3,4,5]"
+            (click)="setRating(star)"
+            (mouseenter)="hoverRating = star"
+            (mouseleave)="hoverRating = 0"
+            class="star-btn"
+            [class.filled]="star <= (hoverRating || rating)"
+            [title]="star + ' star' + (star > 1 ? 's' : '')">
+            <i class="fas fa-star"></i>
+          </button>
+          <span class="star-label" *ngIf="rating > 0">{{ratingLabels[rating - 1]}}</span>
+          <span class="star-label muted" *ngIf="rating === 0">Select a rating</span>
+        </div>
       </div>
 
-      <button (click)="addFeedback()" [disabled]="loading || !newFeedbackText.trim()" class="btn-primary">
+      <div class="field">
+        <label>Your Feedback (optional)</label>
+        <textarea [(ngModel)]="newFeedbackText" rows="4" class="input" placeholder="Share your thoughts about the workshop experience... (optional)"></textarea>
+      </div>
+
+      <button (click)="addFeedback()" [disabled]="loading || rating === 0" class="btn-primary">
         <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
         <i *ngIf="!loading" class="fas fa-paper-plane"></i>
         {{ loading ? 'Submitting...' : 'Submit Feedback' }}
@@ -61,7 +78,11 @@
             <i class="fas fa-trash"></i>
           </button>
         </div>
-        <p class="feedback-text">{{fb.FeedbackText}}</p>
+        <div *ngIf="fb.Rating" class="star-display">
+          <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= fb.Rating"><i class="fas fa-star"></i></span>
+          <span class="muted small">({{fb.Rating}}/5)</span>
+        </div>
+        <p class="feedback-text" *ngIf="fb.FeedbackText">{{fb.FeedbackText}}</p>
         <div *ngIf="fb.AdminResponse" class="response">
           <p class="response-title"><i class="fas fa-headset"></i> Admin Response</p>
           <p>{{fb.AdminResponse}}</p>

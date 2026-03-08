@@ -25,6 +25,9 @@
   <div *ngIf="errorMessage" class="panel alert error">
     <i class="fas fa-triangle-exclamation"></i> {{errorMessage}}
   </div>
+  <div *ngIf="successMessage" class="panel alert success">
+    <i class="fas fa-circle-check"></i> {{successMessage}}
+  </div>
 
   <div *ngIf="loading" class="panel loading">
     <div class="spinner"></div>
@@ -39,38 +42,92 @@
     <p class="muted">Try adjusting your search or check back later.</p>
   </div>
 
-  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'grid'" class="event-grid fade-in">
+  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'grid'" class="event-grid">
     <div *ngFor="let ev of filteredEvents" class="card event-card">
       <div class="event-accent"></div>
       <div class="event-body">
         <div class="event-meta">
           <span class="badge"><i class="fas fa-tag"></i>{{ev.Category}}</span>
           <span class="muted"><i class="fas fa-users"></i>{{ev.Capacity}} seats</span>
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold" [ngClass]="getEventStatusClass(ev.Status)">
+            {{ev.Status || 'Upcoming'}}
+          </span>
         </div>
         <h3>{{ev.EventName}}</h3>
         <p class="muted">Organizer · {{ev.OrganizerName}}</p>
         <p class="event-desc">{{ev.Description}}</p>
+        <div class="text-xs text-amber-500 font-semibold" *ngIf="getRatingSummary(ev.WorkshopEventId)">
+          <i class="fas fa-star"></i>
+          {{getRatingSummary(ev.WorkshopEventId)?.AverageRating}} / 5
+          ({{getRatingSummary(ev.WorkshopEventId)?.TotalRatings}} ratings)
+        </div>
         <div class="event-info">
           <div><i class="fas fa-calendar-days"></i>{{ev.StartDateTime | date:'MMM d, y'}} - {{ev.EndDateTime | date:'MMM d, y'}}</div>
           <div><i class="fas fa-location-dot"></i>{{ev.Location}}</div>
         </div>
-        <button (click)="bookEvent(ev.WorkshopEventId)" class="btn-primary full">Register</button>
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="toggleFavorite(ev.WorkshopEventId)"
+            class="btn-ghost"
+            [disabled]="favoriteLoadingMap[ev.WorkshopEventId]">
+            <i class="fas" [ngClass]="isFavorite(ev.WorkshopEventId) ? 'fa-bookmark text-indigo-500' : 'fa-bookmark text-gray-400'"></i>
+            {{isFavorite(ev.WorkshopEventId) ? 'Saved' : 'Save'}}
+          </button>
+        </div>
+        <button *ngIf="!isWorkshopFull(ev)"
+          (click)="bookEvent(ev.WorkshopEventId)"
+          [disabled]="isAlreadyBooked(ev.WorkshopEventId)"
+          [title]="isAlreadyBooked(ev.WorkshopEventId) ? 'You have already booked this event' : 'Register for this event'"
+          class="btn-primary full"
+          [class.opacity-50]="isAlreadyBooked(ev.WorkshopEventId)"
+          [class.cursor-not-allowed]="isAlreadyBooked(ev.WorkshopEventId)">
+          <i class="fas fa-circle-check text-xs" *ngIf="isAlreadyBooked(ev.WorkshopEventId)"></i>
+          {{ isAlreadyBooked(ev.WorkshopEventId) ? 'Already Booked' : 'Register' }}
+        </button>
+        <button *ngIf="isWorkshopFull(ev)"
+          (click)="joinWaitlist(ev.WorkshopEventId)"
+          [disabled]="isWaitlisted(ev.WorkshopEventId) || waitlistLoadingMap[ev.WorkshopEventId]"
+          class="btn-primary full"
+          [class.opacity-50]="isWaitlisted(ev.WorkshopEventId)">
+          <i class="fas" [ngClass]="isWaitlisted(ev.WorkshopEventId) ? 'fa-circle-check' : 'fa-hourglass-half'"></i>
+          {{isWaitlisted(ev.WorkshopEventId) ? 'Waitlisted' : 'Join Waitlist'}}
+        </button>
       </div>
     </div>
   </div>
 
-  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'list'" class="event-list fade-in">
+  <div *ngIf="!loading && filteredEvents.length > 0 && viewMode === 'list'" class="event-list">
     <div *ngFor="let ev of filteredEvents" class="panel event-row">
       <div>
         <h3>{{ev.EventName}}</h3>
-        <p class="muted">{{ev.OrganizerName}} · {{ev.Category}}</p>
+        <p class="muted">{{ev.OrganizerName}} · {{ev.Category}} · <span [ngClass]="getEventStatusClass(ev.Status)" class="px-2 py-0.5 rounded-full text-xs">{{ev.Status || 'Upcoming'}}</span></p>
+        <p class="text-xs text-amber-500" *ngIf="getRatingSummary(ev.WorkshopEventId)">
+          <i class="fas fa-star"></i> {{getRatingSummary(ev.WorkshopEventId)?.AverageRating}} ({{getRatingSummary(ev.WorkshopEventId)?.TotalRatings}})
+        </p>
       </div>
       <div class="event-row-meta">
         <span><i class="fas fa-calendar-days"></i>{{ev.StartDateTime | date:'MMM d, y'}} - {{ev.EndDateTime | date:'MMM d, y'}}</span>
         <span><i class="fas fa-location-dot"></i>{{ev.Location}}</span>
         <span><i class="fas fa-users"></i>{{ev.Capacity}} seats</span>
       </div>
-      <button (click)="bookEvent(ev.WorkshopEventId)" class="btn-primary">Register</button>
+      <button *ngIf="!isWorkshopFull(ev)" (click)="bookEvent(ev.WorkshopEventId)"
+          [disabled]="isAlreadyBooked(ev.WorkshopEventId)"
+          [title]="isAlreadyBooked(ev.WorkshopEventId) ? 'You have already booked this event' : 'Register for this event'"
+          class="btn-primary"
+          [class.opacity-50]="isAlreadyBooked(ev.WorkshopEventId)"
+          [class.cursor-not-allowed]="isAlreadyBooked(ev.WorkshopEventId)">
+          <i class="fas fa-circle-check text-xs" *ngIf="isAlreadyBooked(ev.WorkshopEventId)"></i>
+          {{ isAlreadyBooked(ev.WorkshopEventId) ? 'Booked' : 'Register' }}
+        </button>
+      <button *ngIf="isWorkshopFull(ev)"
+        (click)="joinWaitlist(ev.WorkshopEventId)"
+        [disabled]="isWaitlisted(ev.WorkshopEventId) || waitlistLoadingMap[ev.WorkshopEventId]"
+        class="btn-primary"
+        [class.opacity-50]="isWaitlisted(ev.WorkshopEventId)">
+        {{isWaitlisted(ev.WorkshopEventId) ? 'Waitlisted' : 'Join Waitlist'}}
+      </button>
+      <button type="button" (click)="toggleFavorite(ev.WorkshopEventId)" class="btn-ghost" [disabled]="favoriteLoadingMap[ev.WorkshopEventId]">
+        <i class="fas" [ngClass]="isFavorite(ev.WorkshopEventId) ? 'fa-bookmark text-indigo-500' : 'fa-bookmark text-gray-400'"></i>
+      </button>
     </div>
   </div>
 </div>

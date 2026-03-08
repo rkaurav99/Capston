@@ -59,6 +59,34 @@
           <div class="db-kpi-bar db-kpi-bar--amber"></div>
           <p class="db-kpi-link db-kpi-link--amber">Needs attention</p>
         </div>
+
+        <div class="db-kpi-card">
+          <div class="db-kpi-icon db-kpi-icon--green"><i class="fas fa-broadcast-tower"></i></div>
+          <p class="db-kpi-value">{{liveWorkshops}}</p>
+          <p class="db-kpi-label">Live Workshops</p>
+          <div class="db-kpi-bar db-kpi-bar--green"></div>
+        </div>
+
+        <div class="db-kpi-card">
+          <div class="db-kpi-icon db-kpi-icon--indigo"><i class="fas fa-hourglass-start"></i></div>
+          <p class="db-kpi-value">{{upcomingWorkshops}}</p>
+          <p class="db-kpi-label">Upcoming Workshops</p>
+          <div class="db-kpi-bar db-kpi-bar--indigo"></div>
+        </div>
+
+        <div class="db-kpi-card">
+          <div class="db-kpi-icon db-kpi-icon--amber"><i class="fas fa-user-clock"></i></div>
+          <p class="db-kpi-value">{{waitlistedCount}}</p>
+          <p class="db-kpi-label">Waitlisted Users</p>
+          <div class="db-kpi-bar db-kpi-bar--amber"></div>
+        </div>
+
+        <div class="db-kpi-card">
+          <div class="db-kpi-icon db-kpi-icon--purple"><i class="fas fa-star"></i></div>
+          <p class="db-kpi-value">{{averageRating}}</p>
+          <p class="db-kpi-label">Average Workshop Rating</p>
+          <div class="db-kpi-bar db-kpi-bar--purple"></div>
+        </div>
       </div>
 
       <!-- Middle 3-col -->
@@ -172,11 +200,11 @@
                 <td class="db-td"><span class="db-mono">#{{b.BookingId}}</span></td>
                 <td class="db-td">
                   <div class="db-user-cell">
-                    <div class="db-user-avatar">U</div>
-                    <span>User #{{b.UserId}}</span>
+                    <div class="db-user-avatar">{{ (b.User?.Username?.charAt(0) || 'U').toUpperCase() }}</div>
+                    <span>{{ b.User?.Username || ('User #' + b.UserId) }}</span>
                   </div>
                 </td>
-                <td class="db-td db-muted">Event #{{b.WorkshopEventId}}</td>
+                <td class="db-td db-muted">{{ b.WorkshopEvent?.EventName || ('Event #' + b.WorkshopEventId) }}</td>
                 <td class="db-td db-muted db-small">{{b.BookingDate | date:'MMM d, y'}}</td>
                 <td class="db-td">
                   <span class="db-badge" [ngClass]="badgeClass(b.BookingStatus)">

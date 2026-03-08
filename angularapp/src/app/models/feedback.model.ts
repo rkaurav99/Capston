@@ -18,6 +18,7 @@ export interface Feedback {
     };
   };
   FeedbackText: string;
+  Rating?: number;
   Date: Date;
   AdminResponse?: string;
   ResponseDate?: Date;

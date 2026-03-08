@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetapp.Models
 {
@@ -14,5 +15,19 @@ namespace dotnetapp.Models
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int Capacity { get; set; }
+
+        [NotMapped]
+        public string Status
+        {
+            get
+            {
+                var now = DateTime.UtcNow;
+                if (now < StartDateTime)
+                    return "Upcoming";
+                if (now <= EndDateTime)
+                    return "Live";
+                return "Completed";
+            }
+        }
     }
 }

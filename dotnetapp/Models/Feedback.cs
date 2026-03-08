@@ -11,6 +11,7 @@ namespace dotnetapp.Models
         public int? BookingId { get; set; }
         public Booking? Booking { get; set; }
         public string FeedbackText { get; set; }
+        public int? Rating { get; set; }
         public DateTime Date { get; set; }
         public string? AdminResponse { get; set; }
         public DateTime? ResponseDate { get; set; }

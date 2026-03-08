@@ -89,20 +89,39 @@
           <label>Mobile number *</label>
         </div>
 
-        <div class="field">
+        <div class="field role-field" [class.field-error]="roleError">
           <span class="field-icon"><i class="fas fa-shield"></i></span>
-          <select name="userRole" [(ngModel)]="user.UserRole" required>
-            <option value="" disabled selected></option>
-            <option value="User">User</option>
-            <option value="Admin">Admin</option>
-          </select>
-          <label>Role *</label>
+          <button
+            type="button"
+            class="role-trigger"
+            [class.has-value]="!!user.UserRole"
+            [class.open]="isRoleMenuOpen"
+            (click)="toggleRoleMenu()"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="isRoleMenuOpen"
+            aria-label="Select role"
+          >
+            {{ user.UserRole || 'Select role' }}
+            <span class="field-tail-icon"><i class="fas fa-chevron-down"></i></span>
+          </button>
+          <label class="role-label" [class.floating]="!!user.UserRole || isRoleMenuOpen">Role *</label>
+          <div class="role-menu" *ngIf="isRoleMenuOpen" role="listbox" aria-label="Role options">
+            <button type="button" class="role-option" [class.active]="user.UserRole === 'User'" (click)="selectRole('User')">User</button>
+            <button type="button" class="role-option" [class.active]="user.UserRole === 'Admin'" (click)="selectRole('Admin')">Admin</button>
+          </div>
+        </div>
+        <div *ngIf="roleError" class="field-hint error-hint">
+          <i class="fas fa-triangle-exclamation"></i> {{roleError}}
         </div>
 
-        <div class="field">
+        <div class="field" *ngIf="isAdminRole()">
           <span class="field-icon"><i class="fas fa-key"></i></span>
-          <input type="password" name="secretKey" [(ngModel)]="user.SecretKey" placeholder=" ">
-          <label>Secret key (Admin)</label>
+          <input type="text" name="secretKey" [(ngModel)]="user.SecretKey" [required]="isAdminRole()" placeholder=" "
+                 (ngModelChange)="secretKeyError = ''">
+          <label>Secret key (Admin) *</label>
+        </div>
+        <div *ngIf="secretKeyError" class="field-hint error-hint">
+          <i class="fas fa-triangle-exclamation"></i> {{secretKeyError}}
         </div>
 
         <button type="submit" [disabled]="loading" class="btn-primary auth-submit">

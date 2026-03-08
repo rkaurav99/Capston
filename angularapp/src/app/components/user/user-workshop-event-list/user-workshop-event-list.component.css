@@ -50,6 +50,12 @@
 	background: rgba(239, 68, 68, 0.12);
 }
 
+.alert.success {
+	border: 1px solid rgba(16, 185, 129, 0.3);
+	color: #10b981;
+	background: rgba(16, 185, 129, 0.12);
+}
+
 .loading {
 	display: flex;
 	align-items: center;

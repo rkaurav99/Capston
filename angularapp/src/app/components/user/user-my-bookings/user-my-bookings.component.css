@@ -1,29 +1,89 @@
 .my-bookings-table {
-	border-collapse: separate;
-	border-spacing: 0;
+  font-size: 13px;
 }
 
 .my-booking-row {
-	transition:
-		background-color var(--transition-fast),
-		box-shadow var(--transition-fast),
-		border-color var(--transition-fast),
-		transform var(--transition-fast);
+  transition: background-color var(--tr-fast);
 }
 
-.my-booking-row:hover,
-.my-booking-row:focus-within {
-	background:
-		linear-gradient(135deg, rgba(var(--theme-glow-rgb), 0.08), rgba(var(--theme-panel-rgb), 0.18)),
-		rgba(var(--theme-panel-rgb), 0.58);
-	box-shadow: inset 0 1px 0 rgba(var(--theme-glow-rgb), 0.08), inset 0 -1px 0 rgba(var(--theme-glow-rgb), 0.08);
+.my-booking-row:hover {
+  background: rgba(var(--theme-glow-rgb), 0.09);
 }
 
 .my-booking-id,
 .my-booking-title {
-	color: var(--theme-text-strong) !important;
+  color: var(--theme-text-strong);
+  font-weight: 700;
 }
 
 .my-booking-meta {
-	color: var(--theme-muted) !important;
+  color: var(--theme-muted);
+  font-size: 12px;
+}
+
+.booking-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.booking-modal {
+  width: min(460px, 94vw);
+  border-radius: 20px;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.booking-modal h3 {
+  font-size: 1rem;
+  color: var(--theme-text-strong);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.booking-qr-img {
+  width: 100%;
+  border: 1px solid var(--theme-border);
+  border-radius: 14px;
+}
+
+.booking-modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.rating-stars button {
+  border: none;
+  background: transparent;
+  color: rgba(var(--theme-glow-rgb), 0.35);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.rating-stars button.active {
+  color: #e1a43e;
+}
+
+.badge-approved {
+  background: rgba(19, 136, 106, 0.12);
+  color: var(--theme-success);
+}
+
+.badge-submitted,
+.badge-pending {
+  background: rgba(98, 130, 176, 0.14);
+  color: var(--theme-primary);
+}
+
+.badge-cancelled {
+  background: rgba(194, 63, 90, 0.12);
+  color: var(--theme-danger);
 }

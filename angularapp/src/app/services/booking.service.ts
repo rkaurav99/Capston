@@ -45,6 +45,14 @@ export class BookingService {
   }
 
   /**
+   * PUT /api/booking/{bookingId}/request-cancel
+   * User requests cancellation of their booking.
+   */
+  requestCancellation(bookingId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/booking/${bookingId}/request-cancel`, {});
+  }
+
+  /**
    * DELETE /api/booking/{bookingId}
    * Deletes a booking. (Admin role)
    */

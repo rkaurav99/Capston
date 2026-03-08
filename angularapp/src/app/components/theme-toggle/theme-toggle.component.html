@@ -1,45 +1,13 @@
-<div class="theme-toggle-shell" [class.open]="isOpen">
+<div class="theme-toggle-shell" role="group" aria-label="Theme switcher">
   <button
     type="button"
-    class="theme-launcher"
-    (click)="togglePanel($event)"
-    [attr.aria-expanded]="isOpen"
-    aria-label="Open theme selector"
+    *ngFor="let theme of themes; trackBy: trackTheme"
+    class="theme-chip"
+    [class.is-active]="theme.key === activeTheme"
+    (click)="selectTheme(theme.key)"
+    [attr.aria-pressed]="theme.key === activeTheme"
   >
-    <span class="theme-launcher-glow"></span>
-    <span class="theme-launcher-icon">
-      <i class="fas fa-swatchbook"></i>
-    </span>
-    <span class="theme-launcher-chevron">
-      <i class="fas" [ngClass]="isOpen ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
-    </span>
+    <i class="fas" [ngClass]="theme.key === 'dark' ? 'fa-moon' : 'fa-sun'"></i>
+    <span>{{ theme.name }}</span>
   </button>
-
-  <div *ngIf="isOpen" class="theme-panel fade-in" role="dialog" aria-label="Theme selector">
-    <div class="theme-panel-list">
-      <button
-        type="button"
-        *ngFor="let theme of themes; trackBy: trackTheme"
-        class="theme-card"
-        [class.is-active]="theme.key === activeTheme"
-        (click)="selectTheme(theme.key)"
-      >
-        <div class="theme-card-preview">
-          <span *ngFor="let color of theme.preview | slice:0:3" [style.background]="color"></span>
-        </div>
-
-        <div class="theme-card-copy">
-          <div class="theme-card-title-row">
-            <div class="theme-card-title-wrap">
-              <h4>{{ theme.name }}</h4>
-            </div>
-          </div>
-        </div>
-
-        <span class="theme-card-check">
-          <i class="fas fa-check"></i>
-        </span>
-      </button>
-    </div>
-  </div>
 </div>

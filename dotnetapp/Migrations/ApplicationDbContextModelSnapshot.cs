@@ -254,6 +254,12 @@ namespace dotnetapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Is24HourReminderSent")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Is6HourReminderSent")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Occupation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -277,6 +283,32 @@ namespace dotnetapp.Migrations
                     b.ToTable("Bookings");
                 });
 
+            modelBuilder.Entity("dotnetapp.Models.FavoriteWorkshop", b =>
+                {
+                    b.Property<int>("FavoriteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FavoriteId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkshopEventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FavoriteId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkshopEventId");
+
+                    b.ToTable("FavoriteWorkshops");
+                });
+
             modelBuilder.Entity("dotnetapp.Models.Feedback", b =>
                 {
                     b.Property<int>("FeedbackId")
@@ -298,6 +330,9 @@ namespace dotnetapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ResponseDate")
                         .HasColumnType("datetime2");
 
@@ -311,6 +346,45 @@ namespace dotnetapp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Feedbacks");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.Notification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RelatedEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("dotnetapp.Models.User", b =>
@@ -347,6 +421,36 @@ namespace dotnetapp.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.WaitlistEntry", b =>
+                {
+                    b.Property<int>("WaitlistId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WaitlistId"));
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkshopEventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WaitlistId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkshopEventId");
+
+                    b.ToTable("WaitlistEntries");
                 });
 
             modelBuilder.Entity("dotnetapp.Models.WorkshopEvent", b =>
@@ -389,6 +493,38 @@ namespace dotnetapp.Migrations
                     b.HasKey("WorkshopEventId");
 
                     b.ToTable("WorkshopEvents");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.WorkshopRating", b =>
+                {
+                    b.Property<int>("RatingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkshopEventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RatingId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkshopEventId");
+
+                    b.ToTable("WorkshopRatings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -461,6 +597,25 @@ namespace dotnetapp.Migrations
                     b.Navigation("WorkshopEvent");
                 });
 
+            modelBuilder.Entity("dotnetapp.Models.FavoriteWorkshop", b =>
+                {
+                    b.HasOne("dotnetapp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetapp.Models.WorkshopEvent", "WorkshopEvent")
+                        .WithMany()
+                        .HasForeignKey("WorkshopEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkshopEvent");
+                });
+
             modelBuilder.Entity("dotnetapp.Models.Feedback", b =>
                 {
                     b.HasOne("dotnetapp.Models.Booking", "Booking")
@@ -476,6 +631,55 @@ namespace dotnetapp.Migrations
                     b.Navigation("Booking");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.Notification", b =>
+                {
+                    b.HasOne("dotnetapp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.WaitlistEntry", b =>
+                {
+                    b.HasOne("dotnetapp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetapp.Models.WorkshopEvent", "WorkshopEvent")
+                        .WithMany()
+                        .HasForeignKey("WorkshopEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkshopEvent");
+                });
+
+            modelBuilder.Entity("dotnetapp.Models.WorkshopRating", b =>
+                {
+                    b.HasOne("dotnetapp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetapp.Models.WorkshopEvent", "WorkshopEvent")
+                        .WithMany()
+                        .HasForeignKey("WorkshopEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkshopEvent");
                 });
 #pragma warning restore 612, 618
         }

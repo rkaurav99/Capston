@@ -85,6 +85,24 @@ namespace dotnetapp.Controllers
             }
         }
 
+        [HttpPut("booking/{bookingId}/request-cancel")]
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<ActionResult> RequestCancelBooking(int bookingId)
+        {
+            try
+            {
+                var result = await _bookingService.RequestCancelBooking(bookingId);
+                if (result)
+                    return Ok(new { message = "Cancellation requested successfully" });
+
+                return NotFound(new { message = "Booking not found" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("booking/{bookingId}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> DeleteBooking(int bookingId)

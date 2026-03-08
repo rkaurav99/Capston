@@ -1,7 +1,8 @@
 <div class="app-shell">
   <app-navbar [showSidebar]="showSidebar" (sidebarCollapsedChange)="sidebarCollapsed=$event"></app-navbar>
-  <div class="app-main" [class.with-sidebar]="showSidebar" [class.sidebar-collapsed]="sidebarCollapsed">
+  <div class="app-main"
+       [class.with-sidebar]="showSidebar"
+       [class.sidebar-collapsed]="sidebarCollapsed">
     <router-outlet></router-outlet>
   </div>
-  <app-theme-toggle></app-theme-toggle>
 </div>

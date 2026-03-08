@@ -8,4 +8,5 @@ export interface WorkshopEvent {
   StartDateTime: Date;
   EndDateTime: Date;
   Capacity: number;
+  Status?: 'Upcoming' | 'Live' | 'Completed' | 'Cancelled' | string;
 }
